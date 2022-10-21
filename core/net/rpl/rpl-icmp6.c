@@ -56,7 +56,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define DEBUG DEBUG_NONE
+#define DEBUG DEBUG_PRINT
 
 #include "net/ip/uip-debug.h"
 
