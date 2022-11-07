@@ -82,6 +82,7 @@ uip_ds6_nbr_t *
 uip_ds6_nbr_add(const uip_ipaddr_t *ipaddr, const uip_lladdr_t *lladdr,
                 uint8_t isrouter, uint8_t state)
 {
+  PRINTF("Quang \n");
   uip_ds6_nbr_t *nbr = nbr_table_add_lladdr(ds6_neighbors, (linkaddr_t*)lladdr);
   if(nbr) {
     uip_ipaddr_copy(&nbr->ipaddr, ipaddr);
@@ -109,7 +110,7 @@ uip_ds6_nbr_add(const uip_ipaddr_t *ipaddr, const uip_lladdr_t *lladdr,
     PRINTF(" state %u\n", state);
     return NULL;
   }
-   nbr->cluster_id = cluster_id;
+   // nbr->cluster_id = cluster_id;
 }
 
 /*---------------------------------------------------------------------------*/
