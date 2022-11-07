@@ -228,6 +228,8 @@ struct rpl_instance {
   struct ctimer dio_timer;
   struct ctimer dao_timer;
   struct ctimer dao_lifetime_timer;
+  /* cluster id */
+  uint8_t cluster_id;
 };
 
 /*---------------------------------------------------------------------------*/

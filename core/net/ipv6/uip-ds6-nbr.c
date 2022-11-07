@@ -70,7 +70,7 @@ void LINK_NEIGHBOR_CALLBACK(const linkaddr_t *addr, int status, int numtx);
 
 NBR_TABLE_GLOBAL(uip_ds6_nbr_t, ds6_neighbors);
 
-int cluster_id;
+uint8_t cluster_id;
 /*---------------------------------------------------------------------------*/
 void
 uip_ds6_neighbors_init(void)
@@ -94,7 +94,7 @@ uip_ds6_nbr_add(const uip_ipaddr_t *ipaddr, const uip_lladdr_t *lladdr,
     stimer_set(&nbr->reachable, 0);
     stimer_set(&nbr->sendns, 0);
     nbr->nscount = 0;
-    PRINTF("Adding neighbor with ip addr and cluster id");
+    PRINTF("RPL: Adding neighbor with ip addr and cluster id");
     PRINT6ADDR(ipaddr);
     PRINTF(" link addr ");
     PRINTLLADDR(lladdr);
@@ -199,13 +199,13 @@ uip_ds6_nbr_lladdr_from_ipaddr_for_cluster_id(const uip_ipaddr_t *ipaddr)
   return nbr ? uip_ds6_nbr_get_ll(nbr) : NULL;
 }
 /*---------------------------------------------------------------------------*/
-int uip_ds6_nbr_lookup_for_cluster_id(const uip_ipaddr_t *ipaddr)
+uint8_t uip_ds6_nbr_lookup_for_cluster_id(const uip_ipaddr_t *ipaddr)
 {
   uip_ds6_nbr_t *nbr = nbr_table_head(ds6_neighbors);
   if(ipaddr != NULL) {
     while(nbr != NULL) {
       if(uip_ipaddr_cmp(&nbr->ipaddr, ipaddr)) {
-        int cluster_id = nbr->cluster_id;
+        uint8_t cluster_id = nbr->cluster_id;
         PRINTF("SeRI: Returning the Cluster ID to the required address");
         return cluster_id;
       }
