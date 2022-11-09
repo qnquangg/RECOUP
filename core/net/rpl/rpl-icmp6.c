@@ -56,6 +56,7 @@
 #include <string.h>
 #include <stdlib.h>
 
+// #define DEBUG DEBUG_ANNOTATE
 #define DEBUG DEBUG_PRINT
 
 #include "net/ip/uip-debug.h"
@@ -273,15 +274,13 @@ dio_input(void)
 
   dio.instance_id = buffer[i++];
   dio.version = buffer[i++];
-  uint8_t cluster_id = buffer[i++];
   dio.rank = get16(buffer, i);
   i += 2;
 
-  PRINTF("RPL: Incoming DIO (id, ver, rank), cluster_id = (%u,%u,%u), %u\n",
+  PRINTF("RPL: Incoming DIO (id, ver, rank), cluster_id = (%u,%u,%u)\n",
          (unsigned)dio.instance_id,
          (unsigned)dio.version,
-         (unsigned)dio.rank),
-          cluster_id;
+         (unsigned)dio.rank);
   
  // cd = dio.rank;
   
@@ -391,18 +390,21 @@ dio_input(void)
       dio.dag_max_rankinc = get16(buffer, i + 6);
       dio.dag_min_hoprankinc = get16(buffer, i + 8);
       dio.ocp = get16(buffer, i + 10);
-      /* buffer + 12 is reserved */
+      /* buffer + 12 is reserved --> I use this for cluster id */
+      uint8_t cluster_id = buffer[i + 12];
+      PRINTF("RPL: Get Cluster id =  %d\n", cluster_id);
+      uip_ds6_nbr_update_cluster_id(&from, cluster_id);
       dio.default_lifetime = buffer[i + 13];
       dio.lifetime_unit = get16(buffer, i + 14);
-      PRINTF("RPL: DAG conf:dbl=%d, min=%d red=%d maxinc=%d mininc=%d ocp=%d d_l=%u l_u=%u\n",
-             dio.dag_intdoubl, dio.dag_intmin, dio.dag_redund,
-             dio.dag_max_rankinc, dio.dag_min_hoprankinc, dio.ocp,
-             dio.default_lifetime, dio.lifetime_unit);
+      // PRINTF("RPL: DAG conf:dbl=%d, min=%d red=%d maxinc=%d mininc=%d ocp=%d d_l=%u l_u=%u\n",
+      //        dio.dag_intdoubl, dio.dag_intmin, dio.dag_redund,
+      //        dio.dag_max_rankinc, dio.dag_min_hoprankinc, dio.ocp,
+      //        dio.default_lifetime, dio.lifetime_unit);
       break;
     case RPL_OPTION_PREFIX_INFO:
       if(len != 32) {
-        PRINTF("RPL: Invalid DAG prefix info, len != 32\n");
-	RPL_STAT(rpl_stats.malformed_msgs++);
+ //        PRINTF("RPL: Invalid DAG prefix info, len != 32\n");
+	// RPL_STAT(rpl_stats.malformed_msgs++);
         return;
       }
       dio.prefix_info.length = buffer[i + 2];
@@ -423,6 +425,8 @@ dio_input(void)
 #ifdef RPL_DEBUG_DIO_INPUT
   RPL_DEBUG_DIO_INPUT(&from, &dio);
 #endif
+
+  uip_ds6_nbr_dump_cluster_id();
 
   rpl_process_dio(&from, &dio);
 
@@ -454,7 +458,8 @@ dio_output(rpl_instance_t *instance, uip_ipaddr_t *uc_addr)
   buffer = UIP_ICMP_PAYLOAD;
   buffer[pos++] = instance->instance_id;
   buffer[pos++] = dag->version;
-  buffer[pos++] = instance->cluster_id;
+
+
 
 #if RPL_LEAF_ONLY
   PRINTF("RPL: LEAF ONLY DIO rank set to INFINITE_RANK\n");
@@ -525,7 +530,9 @@ dio_output(rpl_instance_t *instance, uip_ipaddr_t *uc_addr)
   /* OCP is in the DAG_CONF option */
   set16(buffer, pos, instance->of->ocp);
   pos += 2;
-  buffer[pos++] = 0; /* reserved */
+  // buffer[pos++] = 0; /* reserved */
+  buffer[pos++] = instance->cluster_id; /* I use this for cluster id */
+  PRINTF("RPL:  Quang dio_output, cluster_id = (%d %d)\n", buffer[pos], pos);
   buffer[pos++] = instance->default_lifetime;
   set16(buffer, pos, instance->lifetime_unit);
   pos += 2;
@@ -544,12 +551,12 @@ dio_output(rpl_instance_t *instance, uip_ipaddr_t *uc_addr)
     pos += 4;
     memcpy(&buffer[pos], &dag->prefix_info.prefix, 16);
     pos += 16;
-    PRINTF("RPL: Sending prefix info in DIO for ");
-    PRINT6ADDR(&dag->prefix_info.prefix);
+    // PRINTF("RPL: Sending prefix info in DIO for ");
+    // PRINT6ADDR(&dag->prefix_info.prefix);
     PRINTF("\n");
   } else {
-    PRINTF("RPL: No prefix to announce (len %d)\n",
-           dag->prefix_info.length);
+    // PRINTF("RPL: No prefix to announce (len %d)\n",
+    //        dag->prefix_info.length);
   }
 
 
