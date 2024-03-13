@@ -273,15 +273,13 @@ dio_input(void)
 
   dio.instance_id = buffer[i++];
   dio.version = buffer[i++];
-  uint8_t cluster_id = buffer[i++];
   dio.rank = get16(buffer, i);
   i += 2;
 
-  PRINTF("RPL: Incoming DIO (id, ver, rank), cluster_id = (%u,%u,%u), %u\n",
+  PRINTF("RPL: Incoming DIO (id, ver, rank) = (%u,%u,%u)\n",
          (unsigned)dio.instance_id,
          (unsigned)dio.version,
-         (unsigned)dio.rank),
-          cluster_id;
+         (unsigned)dio.rank);
   
  // cd = dio.rank;
   
@@ -454,7 +452,6 @@ dio_output(rpl_instance_t *instance, uip_ipaddr_t *uc_addr)
   buffer = UIP_ICMP_PAYLOAD;
   buffer[pos++] = instance->instance_id;
   buffer[pos++] = dag->version;
-  buffer[pos++] = instance->cluster_id;
 
 #if RPL_LEAF_ONLY
   PRINTF("RPL: LEAF ONLY DIO rank set to INFINITE_RANK\n");
@@ -551,8 +548,6 @@ dio_output(rpl_instance_t *instance, uip_ipaddr_t *uc_addr)
     PRINTF("RPL: No prefix to announce (len %d)\n",
            dag->prefix_info.length);
   }
-
-
 
 #if RPL_LEAF_ONLY
 #if (DEBUG) & DEBUG_PRINT
@@ -1014,6 +1009,9 @@ dao_ack_output(rpl_instance_t *instance, uip_ipaddr_t *dest, uint8_t sequence, u
   unsigned char *buffer;
   rpl_dag_t *d;
   
+  printf("my_address is %x\n", dest->u8[15]);
+  printf("\n");
+
   d = rpl_get_any_dag();
   if (d->rank == ROOT_RANK(default_instance)) {
     PRINTF("RPL: I am a root. I will set new cluster id for cluster head\n");
