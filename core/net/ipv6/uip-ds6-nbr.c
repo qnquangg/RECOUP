@@ -51,8 +51,7 @@
 #include "net/packetbuf.h"
 #include "net/ipv6/uip-ds6-nbr.h"
 
-#define DEBUG DEBUG_PRINT
-// #define DEBUG DEBUG_NONE
+#define DEBUG DEBUG_NONE
 #include "net/ip/uip-debug.h"
 
 #ifdef UIP_CONF_DS6_NEIGHBOR_STATE_CHANGED
@@ -71,7 +70,7 @@ void LINK_NEIGHBOR_CALLBACK(const linkaddr_t *addr, int status, int numtx);
 
 NBR_TABLE_GLOBAL(uip_ds6_nbr_t, ds6_neighbors);
 
-// uint8_t cluster_id;
+uint8_t cluster_id;
 /*---------------------------------------------------------------------------*/
 void
 uip_ds6_neighbors_init(void)
@@ -83,7 +82,7 @@ uip_ds6_nbr_t *
 uip_ds6_nbr_add(const uip_ipaddr_t *ipaddr, const uip_lladdr_t *lladdr,
                 uint8_t isrouter, uint8_t state)
 {
-  ANNOTATE("Quang \n");
+  PRINTF("Quang \n");
   uip_ds6_nbr_t *nbr = nbr_table_add_lladdr(ds6_neighbors, (linkaddr_t*)lladdr);
   if(nbr) {
     uip_ipaddr_copy(&nbr->ipaddr, ipaddr);
@@ -96,48 +95,24 @@ uip_ds6_nbr_add(const uip_ipaddr_t *ipaddr, const uip_lladdr_t *lladdr,
     stimer_set(&nbr->reachable, 0);
     stimer_set(&nbr->sendns, 0);
     nbr->nscount = 0;
-    ANNOTATE("RPL: Adding neighbor with ip addr and cluster id");
+    PRINTF("RPL: Adding neighbor with ip addr and cluster id");
     PRINT6ADDR(ipaddr);
-    ANNOTATE(" link addr ");
+    PRINTF(" link addr ");
     PRINTLLADDR(lladdr);
-    ANNOTATE(" state %u\n", state);
+    PRINTF(" state %u\n", state);
     NEIGHBOR_STATE_CHANGED(nbr);
     return nbr;
   } else {
-    ANNOTATE("uip_ds6_nbr_add drop ip addr ");
+    PRINTF("uip_ds6_nbr_add drop ip addr ");
     PRINT6ADDR(ipaddr);
-    ANNOTATE(" link addr (%p) ", lladdr);
+    PRINTF(" link addr (%p) ", lladdr);
     PRINTLLADDR(lladdr);
-    ANNOTATE(" state %u\n", state);
+    PRINTF(" state %u\n", state);
     return NULL;
   }
    // nbr->cluster_id = cluster_id;
 }
 
-void uip_ds6_nbr_update_cluster_id(const uip_ipaddr_t *ipaddr, uint8_t cluster_id) {
-  // Save cluster id for each neighbor
-  uip_ds6_nbr_t *nbr = uip_ds6_nbr_lookup(ipaddr);
-  if (nbr) {
-    ANNOTATE("RPL: Update cluster id %d\n", cluster_id);
-    nbr->cluster_id = cluster_id;
-  }
-}
-
-void uip_ds6_nbr_dump_cluster_id(void)
-{
-  uip_ds6_nbr_t *nbr;
-
-  for(nbr = nbr_table_head(ds6_neighbors);
-      nbr != NULL;
-      nbr = nbr_table_next(ds6_neighbors, nbr)) {
-    
-    PRINTF("RPL: Dump: ipaddr = ");
-    PRINT6ADDR(&nbr->ipaddr);
-    PRINTF(", with cluster id = %d\n", nbr->cluster_id);
-
-  }
-  return;
-}
 /*---------------------------------------------------------------------------*/
 void
 uip_ds6_nbr_rm(uip_ds6_nbr_t *nbr)
@@ -232,7 +207,7 @@ uint8_t uip_ds6_nbr_lookup_for_cluster_id(const uip_ipaddr_t *ipaddr)
     while(nbr != NULL) {
       if(uip_ipaddr_cmp(&nbr->ipaddr, ipaddr)) {
         uint8_t cluster_id = nbr->cluster_id;
-        ANNOTATE("SeRI: Returning the Cluster ID to the required address");
+        PRINTF("SeRI: Returning the Cluster ID to the required address");
         return cluster_id;
       }
       nbr = nbr_table_next(ds6_neighbors, nbr);
@@ -261,9 +236,9 @@ uip_ds6_link_neighbor_callback(int status, int numtx)
          nbr->state == NBR_PROBE)) {
       nbr->state = NBR_REACHABLE;
       stimer_set(&nbr->reachable, UIP_ND6_REACHABLE_TIME / 1000);
-      ANNOTATE("uip-ds6-neighbor : received a link layer ACK : ");
+      PRINTF("uip-ds6-neighbor : received a link layer ACK : ");
       PRINTLLADDR((uip_lladdr_t *)dest);
-      ANNOTATE(" is reachable.\n");
+      PRINTF(" is reachable.\n");
     }
   }
 #endif /* UIP_DS6_LL_NUD */
@@ -279,9 +254,9 @@ uip_ds6_neighbor_periodic(void)
     switch(nbr->state) {
     case NBR_REACHABLE:
       if(stimer_expired(&nbr->reachable)) {
-        ANNOTATE("REACHABLE: moving to STALE (");
+        PRINTF("REACHABLE: moving to STALE (");
         PRINT6ADDR(&nbr->ipaddr);
-        ANNOTATE(")\n");
+        PRINTF(")\n");
         nbr->state = NBR_STALE;
       }
       break;
@@ -291,7 +266,7 @@ uip_ds6_neighbor_periodic(void)
         uip_ds6_nbr_rm(nbr);
       } else if(stimer_expired(&nbr->sendns) && (uip_len == 0)) {
         nbr->nscount++;
-        ANNOTATE("NBR_INCOMPLETE: NS %u\n", nbr->nscount);
+        PRINTF("NBR_INCOMPLETE: NS %u\n", nbr->nscount);
         uip_nd6_ns_output(NULL, NULL, &nbr->ipaddr);
         stimer_set(&nbr->sendns, uip_ds6_if.retrans_timer / 1000);
       }
@@ -300,14 +275,14 @@ uip_ds6_neighbor_periodic(void)
       if(stimer_expired(&nbr->reachable)) {
         nbr->state = NBR_PROBE;
         nbr->nscount = 0;
-        ANNOTATE("DELAY: moving to PROBE\n");
+        PRINTF("DELAY: moving to PROBE\n");
         stimer_set(&nbr->sendns, 0);
       }
       break;
     case NBR_PROBE:
       if(nbr->nscount >= UIP_ND6_MAX_UNICAST_SOLICIT) {
         uip_ds6_defrt_t *locdefrt;
-        ANNOTATE("PROBE END\n");
+        PRINTF("PROBE END\n");
         if((locdefrt = uip_ds6_defrt_lookup(&nbr->ipaddr)) != NULL) {
           if (!locdefrt->isinfinite) {
             uip_ds6_defrt_rm(locdefrt);
@@ -316,7 +291,7 @@ uip_ds6_neighbor_periodic(void)
         uip_ds6_nbr_rm(nbr);
       } else if(stimer_expired(&nbr->sendns) && (uip_len == 0)) {
         nbr->nscount++;
-        ANNOTATE("PROBE: NS %u\n", nbr->nscount);
+        PRINTF("PROBE: NS %u\n", nbr->nscount);
         uip_nd6_ns_output(NULL, &nbr->ipaddr, &nbr->ipaddr);
         stimer_set(&nbr->sendns, uip_ds6_if.retrans_timer / 1000);
       }

@@ -218,7 +218,6 @@ struct rpl_dio {
   uint8_t mop;
   uint8_t preference;
   uint8_t version;
-  uint8_t cluster_id;
   uint8_t instance_id;
   uint8_t dtsn;
   uint8_t dag_intdoubl;
