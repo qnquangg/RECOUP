@@ -57,9 +57,6 @@
 #define UIP_CONF_ROUTER              1
 #define UIP_MCAST6_ROUTE_CONF_ROUTES 8
 
-
-#define RPL_CONF_DAO_ACK		1
-
 #undef UIP_CONF_TCP
 #define UIP_CONF_TCP 0
 
