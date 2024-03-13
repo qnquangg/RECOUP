@@ -53,6 +53,7 @@
 #define DEBUG DEBUG_NONE
 #include "net/ip/uip-debug.h"
 
+// BMRF is already there, no need to port
 #if UIP_CONF_IPV6_RPL
 #include "net/ipv6/multicast/uip-mcast6.h"
 #if UIP_MCAST6_ENGINE == UIP_MCAST6_ENGINE_BMRF
@@ -431,6 +432,7 @@ uip_ds6_maddr_add(const uip_ipaddr_t *ipaddr)
       (uip_ds6_element_t **)&locmaddr) == FREESPACE) {
     locmaddr->isused = 1;
     uip_ipaddr_copy(&locmaddr->ipaddr, ipaddr);
+// BMRF is already there, no need to port
 #if UIP_CONF_IPV6_RPL && UIP_MCAST6_ENGINE == UIP_MCAST6_ENGINE_BMRF
     rpl_schedule_dao_immediately_default_instance();
 #endif
@@ -445,6 +447,7 @@ uip_ds6_maddr_rm(uip_ds6_maddr_t *maddr)
 {
   if(maddr != NULL && maddr->isused == 1) {
     maddr->isused = 0;
+// BMRF is already there, no need to port
 #if UIP_CONF_IPV6_RPL && UIP_MCAST6_ENGINE == UIP_MCAST6_ENGINE_BMRF
     rpl_schedule_dao_immediately_default_instance();
 #endif
