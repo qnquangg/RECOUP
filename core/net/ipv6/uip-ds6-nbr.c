@@ -199,20 +199,20 @@ uip_ds6_nbr_lladdr_from_ipaddr_for_cluster_id(const uip_ipaddr_t *ipaddr)
   return nbr ? uip_ds6_nbr_get_ll(nbr) : NULL;
 }
 /*---------------------------------------------------------------------------*/
-int uip_ds6_nbr_lookup_for_cluster_id(const uip_ipaddr_t *ipaddr)
+int *uip_ds6_nbr_lookup_for_cluster_id(const uip_ipaddr_t *ipaddr)
 {
   uip_ds6_nbr_t *nbr = nbr_table_head(ds6_neighbors);
   if(ipaddr != NULL) {
     while(nbr != NULL) {
       if(uip_ipaddr_cmp(&nbr->ipaddr, ipaddr)) {
-        int cluster_id = nbr->cluster_id;
+       int cluster_id = nbr->cluster_id;
         PRINTF("SeRI: Returning the Cluster ID to the required address");
         return cluster_id;
       }
       nbr = nbr_table_next(ds6_neighbors, nbr);
     }
   }
-  return -1; // -1 means no cluster id for this address
+  return NULL;
 }
 
 /*---------------------------------------------------------------------------*/

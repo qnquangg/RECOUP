@@ -335,10 +335,10 @@ packet_from_bellow:
       return UIP_MCAST6_DROP;
     }
    //check for the packet from different cluster here only
-     int idc = uip_ds6_nbr_lookup_for_cluster_id(parent_lladdr);
+     int idc = *uip_ds6_nbr_lookup_for_cluster_id(parent_lladdr);
      neighbor_lladdr = uip_ds6_nbr_lladdr_from_ipaddr(parent_lladdr);
-     int idn = uip_ds6_nbr_lookup_for_cluster_id(neighbor_lladdr);
-         if(idc != -1 && idn != -1 && idc != idn)
+     int idn = *uip_ds6_nbr_lookup_for_cluster_id(neighbor_lladdr);
+         if(idc != idn)
              {  UIP_MCAST6_STATS_ADD(mcast_fwd); 
                 PRINTF("SeRI: Should be a packet from Different Cluster ");
              }
@@ -406,16 +406,16 @@ out()
 
   if(parent_lladdr != NULL) {
      parent_lladdr = uip_ds6_nbr_lladdr_from_ipaddr(rpl_get_parent_ipaddr(dag->preferred_parent));    
-     int cid = uip_ds6_nbr_lookup_for_cluster_id(parent_lladdr);
+     int cid = *uip_ds6_nbr_lookup_for_cluster_id(parent_lladdr);
      neighbor_lladdr = uip_ds6_nbr_lladdr_from_ipaddr(parent_lladdr);
-     int nid = uip_ds6_nbr_lookup_for_cluster_id(neighbor_lladdr);
-         if(cid != -1 && nid != -1 && cid != nid)
+     int nid = *uip_ds6_nbr_lookup_for_cluster_id(neighbor_lladdr);
+         if(cid != nid)
              {  
               PRINTF("SeRI: Seed, send to Different cluster also ");
               mcast_fwd_with_unicast();                
              }
           else
-             { return;
+             { return 0;
              }
        }    
 

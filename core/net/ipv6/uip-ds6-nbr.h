@@ -98,7 +98,7 @@ void uip_ds6_neighbor_periodic(void);
 int uip_ds6_nbr_num(void);
 
 const uip_lladdr_t *uip_ds6_nbr_lladdr_from_ipaddr_for_cluster_id(const uip_ipaddr_t *ipaddr);
-int uip_ds6_nbr_lookup_for_cluster_id(const uip_ipaddr_t *ipaddr);
+int *uip_ds6_nbr_lookup_for_cluster_id(const uip_ipaddr_t *ipaddr);
 
 
 /**
