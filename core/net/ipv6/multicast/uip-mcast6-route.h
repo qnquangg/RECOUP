@@ -51,6 +51,8 @@ typedef struct uip_mcast6_route {
   void *dag; /* Pointer to an rpl_dag_t struct */
 #if UIP_MCAST6_CONF_ENGINE == UIP_MCAST6_ENGINE_SeRI
   uip_lladdr_t subscribed_child;
+#elif UIP_MCAST6_CONF_ENGINE == UIP_MCAST6_ENGINE_BMRF
+  uip_lladdr_t subscribed_child;
 #endif
 } uip_mcast6_route_t;
 /*---------------------------------------------------------------------------*/
@@ -58,6 +60,8 @@ typedef struct uip_mcast6_route {
 /** @{ */
 uip_mcast6_route_t *uip_mcast6_route_lookup(uip_ipaddr_t *group);
 #if UIP_MCAST6_CONF_ENGINE == UIP_MCAST6_ENGINE_SeRI
+uip_mcast6_route_t *uip_mcast6_route_add(uip_ipaddr_t *group, uip_lladdr_t *subscriber);
+#elif UIP_MCAST6_CONF_ENGINE == UIP_MCAST6_ENGINE_BMRF
 uip_mcast6_route_t *uip_mcast6_route_add(uip_ipaddr_t *group, uip_lladdr_t *subscriber);
 #else
 uip_mcast6_route_t *uip_mcast6_route_add(uip_ipaddr_t *group);
