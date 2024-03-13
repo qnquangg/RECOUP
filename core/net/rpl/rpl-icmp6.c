@@ -601,7 +601,7 @@ dao_input(void)
   int pos;
   int len;
   int i;
-  uint8_t cluster_id;
+ // uint8_t cluster_id;
   int learned_from;
   rpl_parent_t *parent;
   uip_ds6_nbr_t *nbr;
@@ -609,7 +609,7 @@ dao_input(void)
   prefixlen = 0;
   parent = NULL;
 
- // int cluster_id;
+ int cluster_id;
 
   uip_ipaddr_copy(&dao_sender_addr, &UIP_IP_BUF->srcipaddr);
 
@@ -721,10 +721,8 @@ dao_input(void)
     }
 #if UIP_MCAST6_ENGINE == UIP_MCAST6_ENGINE_SeRI
     if(lifetime == RPL_ZERO_LIFETIME) {
-      PRINTF("RPL: SeRI: goto end_dao \n");
       goto end_dao;
     } else {
-      PRINTF("RPL: SeRI: goto fwd_dao \n");
       goto fwd_dao;
     }
 #else
@@ -769,7 +767,6 @@ dao_input(void)
   PRINTF("RPL: adding DAO route\n");
 
   if((nbr = uip_ds6_nbr_lookup(&dao_sender_addr)) == NULL) {
-    PRINTF("RPL: Quang Neighbor added to neighbor cache \n");
     if((nbr = uip_ds6_nbr_add(&dao_sender_addr,
                               (uip_lladdr_t *)packetbuf_addr(PACKETBUF_ADDR_SENDER),
                               0, NBR_REACHABLE)) != NULL) {
@@ -818,7 +815,6 @@ fwd_dao:
                      ICMP6_RPL, RPL_CODE_DAO, buffer_length);
     }
     if(flags & RPL_DAO_K_FLAG) {
-      PRINTF("RPL: fwd_dao: dao_ack_output \n");
       dao_ack_output(instance, &dao_sender_addr, sequence, cluster_id);
     }
   }
@@ -970,14 +966,12 @@ static void
 dao_ack_input(void)
 {
 #if DEBUG
-  // save my cluster id
   unsigned char *buffer;
   uint8_t buffer_length;
   uint8_t instance_id;
   uint8_t sequence;
-  uint8_t cluster_id;
+  int cluster_id;
   uint8_t status;
-  rpl_dag_t *d;
 
   buffer = UIP_ICMP_PAYLOAD;
   buffer_length = uip_len - uip_l3_icmp_hdr_len;
@@ -990,42 +984,33 @@ dao_ack_input(void)
 
   PRINTF("RPL: Received a DAO ACK with sequence number %d and status %d  and %d cluster id from ",
     sequence, status, cluster_id);
-  PRINTF("SeRI: Receiving Cluster ID from the Cluster Heads and other Nodes");
+  PRINTF("SeRI: Receiving Cluster ID to the Cluster Heads and other Nodes");
   PRINT6ADDR(&UIP_IP_BUF->srcipaddr);
   PRINTF("\n");
-
-  // Update my cluster_id
-  d = rpl_get_any_dag();
-  d->instance->cluster_id = cluster_id;
-  PRINTF("RPL: Updated my cluster id: %u\n", d->instance->cluster_id);
-
 #endif /* DEBUG */
   uip_len = 0;
 }
 /*---------------------------------------------------------------------------*/
 void
-dao_ack_output(rpl_instance_t *instance, uip_ipaddr_t *dest, uint8_t sequence, uint8_t cluster_id)
+dao_ack_output(rpl_instance_t *instance, uip_ipaddr_t *dest, uint8_t sequence, int cluster_id)
 {
   unsigned char *buffer;
-  rpl_dag_t *d;
+ 
+  PRINTF("RPL: Sending a DAO ACK with sequence number and cluster id %d to ", sequence, cluster_id);
   
-  printf("my_address is %x\n", dest->u8[15]);
-  printf("\n");
-
-  d = rpl_get_any_dag();
-  if (d->rank == ROOT_RANK(default_instance)) {
-    PRINTF("RPL: I am a root. I will set new cluster id for cluster head\n");
-    PRINTF("RPL: Assume that the cluster IDs of the clusters is same as the node ID of the clusterhead.\n");
-    cluster_id = dest->u8[15];
+  PRINT6ADDR(dest);
+  PRINTF("\n");
+ 
+  if(cd == 256)
+   {
+    cluster_id = rand();
+   }
+  else
+  {
+  cluster_id = cluster_id;
   }
-  else {
-    PRINTF("RPL: I am not a root, I'm a cluster head. I will send my cluster id to my children\n");
-    cluster_id = instance->cluster_id;
-  }
-
-  PRINTF("RPL: Sending a DAO ACK with sequence number %d and cluster id %d to \n", sequence, cluster_id);
   
-  PRINTF("SeRI: Providing Cluster ID to the Cluster Heads and other Nodes \n");
+  PRINTF("SeRI: Providing Cluster ID to the Cluster Heads and other Nodes");
   buffer = UIP_ICMP_PAYLOAD;
 
   buffer[0] = instance->instance_id;
