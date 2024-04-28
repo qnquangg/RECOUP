@@ -78,7 +78,7 @@ typedef struct uip_ds6_nbr {
   struct uip_packetqueue_handle packethandle;
 #define UIP_DS6_NBR_PACKET_LIFETIME CLOCK_SECOND * 4
 #endif                          /*UIP_CONF_QUEUE_PKT */
-  uint8_t cluster_id;
+  int cluster_id;
 } uip_ds6_nbr_t;
 
 void uip_ds6_neighbors_init(void);
@@ -96,11 +96,9 @@ const uip_lladdr_t *uip_ds6_nbr_lladdr_from_ipaddr(const uip_ipaddr_t *ipaddr);
 void uip_ds6_link_neighbor_callback(int status, int numtx);
 void uip_ds6_neighbor_periodic(void);
 int uip_ds6_nbr_num(void);
-void uip_ds6_nbr_dump_cluster_id(void);
-void uip_ds6_nbr_update_cluster_id(const uip_ipaddr_t *ipaddr, uint8_t cluster_id);
 
 const uip_lladdr_t *uip_ds6_nbr_lladdr_from_ipaddr_for_cluster_id(const uip_ipaddr_t *ipaddr);
-uint8_t uip_ds6_nbr_lookup_for_cluster_id(const uip_ipaddr_t *ipaddr);
+int *uip_ds6_nbr_lookup_for_cluster_id(const uip_ipaddr_t *ipaddr);
 
 
 /**

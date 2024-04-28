@@ -56,8 +56,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-// #define DEBUG DEBUG_ANNOTATE
-#define DEBUG DEBUG_PRINT
+#define DEBUG DEBUG_NONE
 
 #include "net/ip/uip-debug.h"
 
@@ -277,7 +276,7 @@ dio_input(void)
   dio.rank = get16(buffer, i);
   i += 2;
 
-  PRINTF("RPL: Incoming DIO (id, ver, rank), cluster_id = (%u,%u,%u)\n",
+  PRINTF("RPL: Incoming DIO (id, ver, rank) = (%u,%u,%u)\n",
          (unsigned)dio.instance_id,
          (unsigned)dio.version,
          (unsigned)dio.rank);
@@ -390,21 +389,18 @@ dio_input(void)
       dio.dag_max_rankinc = get16(buffer, i + 6);
       dio.dag_min_hoprankinc = get16(buffer, i + 8);
       dio.ocp = get16(buffer, i + 10);
-      /* buffer + 12 is reserved --> I use this for cluster id */
-      uint8_t cluster_id = buffer[i + 12];
-      PRINTF("RPL: Get Cluster id =  %d\n", cluster_id);
-      uip_ds6_nbr_update_cluster_id(&from, cluster_id);
+      /* buffer + 12 is reserved */
       dio.default_lifetime = buffer[i + 13];
       dio.lifetime_unit = get16(buffer, i + 14);
-      // PRINTF("RPL: DAG conf:dbl=%d, min=%d red=%d maxinc=%d mininc=%d ocp=%d d_l=%u l_u=%u\n",
-      //        dio.dag_intdoubl, dio.dag_intmin, dio.dag_redund,
-      //        dio.dag_max_rankinc, dio.dag_min_hoprankinc, dio.ocp,
-      //        dio.default_lifetime, dio.lifetime_unit);
+      PRINTF("RPL: DAG conf:dbl=%d, min=%d red=%d maxinc=%d mininc=%d ocp=%d d_l=%u l_u=%u\n",
+             dio.dag_intdoubl, dio.dag_intmin, dio.dag_redund,
+             dio.dag_max_rankinc, dio.dag_min_hoprankinc, dio.ocp,
+             dio.default_lifetime, dio.lifetime_unit);
       break;
     case RPL_OPTION_PREFIX_INFO:
       if(len != 32) {
- //        PRINTF("RPL: Invalid DAG prefix info, len != 32\n");
-	// RPL_STAT(rpl_stats.malformed_msgs++);
+        PRINTF("RPL: Invalid DAG prefix info, len != 32\n");
+	RPL_STAT(rpl_stats.malformed_msgs++);
         return;
       }
       dio.prefix_info.length = buffer[i + 2];
@@ -425,8 +421,6 @@ dio_input(void)
 #ifdef RPL_DEBUG_DIO_INPUT
   RPL_DEBUG_DIO_INPUT(&from, &dio);
 #endif
-
-  uip_ds6_nbr_dump_cluster_id();
 
   rpl_process_dio(&from, &dio);
 
@@ -458,8 +452,6 @@ dio_output(rpl_instance_t *instance, uip_ipaddr_t *uc_addr)
   buffer = UIP_ICMP_PAYLOAD;
   buffer[pos++] = instance->instance_id;
   buffer[pos++] = dag->version;
-
-
 
 #if RPL_LEAF_ONLY
   PRINTF("RPL: LEAF ONLY DIO rank set to INFINITE_RANK\n");
@@ -530,9 +522,7 @@ dio_output(rpl_instance_t *instance, uip_ipaddr_t *uc_addr)
   /* OCP is in the DAG_CONF option */
   set16(buffer, pos, instance->of->ocp);
   pos += 2;
-  // buffer[pos++] = 0; /* reserved */
-  buffer[pos++] = instance->cluster_id; /* I use this for cluster id */
-  PRINTF("RPL:  Quang dio_output, cluster_id = (%d %d)\n", buffer[pos], pos);
+  buffer[pos++] = 0; /* reserved */
   buffer[pos++] = instance->default_lifetime;
   set16(buffer, pos, instance->lifetime_unit);
   pos += 2;
@@ -551,15 +541,13 @@ dio_output(rpl_instance_t *instance, uip_ipaddr_t *uc_addr)
     pos += 4;
     memcpy(&buffer[pos], &dag->prefix_info.prefix, 16);
     pos += 16;
-    // PRINTF("RPL: Sending prefix info in DIO for ");
-    // PRINT6ADDR(&dag->prefix_info.prefix);
+    PRINTF("RPL: Sending prefix info in DIO for ");
+    PRINT6ADDR(&dag->prefix_info.prefix);
     PRINTF("\n");
   } else {
-    // PRINTF("RPL: No prefix to announce (len %d)\n",
-    //        dag->prefix_info.length);
+    PRINTF("RPL: No prefix to announce (len %d)\n",
+           dag->prefix_info.length);
   }
-
-
 
 #if RPL_LEAF_ONLY
 #if (DEBUG) & DEBUG_PRINT
@@ -613,7 +601,7 @@ dao_input(void)
   int pos;
   int len;
   int i;
-  uint8_t cluster_id;
+ // uint8_t cluster_id;
   int learned_from;
   rpl_parent_t *parent;
   uip_ds6_nbr_t *nbr;
@@ -621,7 +609,7 @@ dao_input(void)
   prefixlen = 0;
   parent = NULL;
 
- // int cluster_id;
+ int cluster_id;
 
   uip_ipaddr_copy(&dao_sender_addr, &UIP_IP_BUF->srcipaddr);
 
@@ -724,6 +712,8 @@ dao_input(void)
   if(uip_is_addr_mcast_global(&prefix)) {
 #if UIP_MCAST6_ENGINE == UIP_MCAST6_ENGINE_SeRI
     mcast_group = uip_mcast6_route_add(&prefix, (uip_lladdr_t *)packetbuf_addr(PACKETBUF_ADDR_SENDER));
+#elif UIP_MCAST6_ENGINE == UIP_MCAST6_ENGINE_BMRF
+    mcast_group = uip_mcast6_route_add(&prefix, (uip_lladdr_t *)packetbuf_addr(PACKETBUF_ADDR_SENDER));
 #else
     mcast_group = uip_mcast6_route_add(&prefix);
 #endif /* UIP_MCAST6_ENGINE */
@@ -733,10 +723,14 @@ dao_input(void)
     }
 #if UIP_MCAST6_ENGINE == UIP_MCAST6_ENGINE_SeRI
     if(lifetime == RPL_ZERO_LIFETIME) {
-      PRINTF("RPL: SeRI: goto end_dao \n");
       goto end_dao;
     } else {
-      PRINTF("RPL: SeRI: goto fwd_dao \n");
+      goto fwd_dao;
+    }
+#elif UIP_MCAST6_ENGINE == UIP_MCAST6_ENGINE_BMRF
+    if(lifetime == RPL_ZERO_LIFETIME) {
+      goto end_dao;
+    } else {
       goto fwd_dao;
     }
 #else
@@ -781,7 +775,6 @@ dao_input(void)
   PRINTF("RPL: adding DAO route\n");
 
   if((nbr = uip_ds6_nbr_lookup(&dao_sender_addr)) == NULL) {
-    PRINTF("RPL: Quang Neighbor added to neighbor cache \n");
     if((nbr = uip_ds6_nbr_add(&dao_sender_addr,
                               (uip_lladdr_t *)packetbuf_addr(PACKETBUF_ADDR_SENDER),
                               0, NBR_REACHABLE)) != NULL) {
@@ -830,11 +823,12 @@ fwd_dao:
                      ICMP6_RPL, RPL_CODE_DAO, buffer_length);
     }
     if(flags & RPL_DAO_K_FLAG) {
-      PRINTF("RPL: fwd_dao: dao_ack_output \n");
       dao_ack_output(instance, &dao_sender_addr, sequence, cluster_id);
     }
   }
 #if UIP_MCAST6_ENGINE == UIP_MCAST6_ENGINE_SeRI
+end_dao:
+#elif UIP_MCAST6_ENGINE == UIP_MCAST6_ENGINE_BMRF
 end_dao:
 #endif
   uip_len = 0;
@@ -982,14 +976,12 @@ static void
 dao_ack_input(void)
 {
 #if DEBUG
-  // save my cluster id
   unsigned char *buffer;
   uint8_t buffer_length;
   uint8_t instance_id;
   uint8_t sequence;
-  uint8_t cluster_id;
+  int cluster_id;
   uint8_t status;
-  rpl_dag_t *d;
 
   buffer = UIP_ICMP_PAYLOAD;
   buffer_length = uip_len - uip_l3_icmp_hdr_len;
@@ -1002,39 +994,33 @@ dao_ack_input(void)
 
   PRINTF("RPL: Received a DAO ACK with sequence number %d and status %d  and %d cluster id from ",
     sequence, status, cluster_id);
-  PRINTF("SeRI: Receiving Cluster ID from the Cluster Heads and other Nodes");
+  PRINTF("SeRI: Receiving Cluster ID to the Cluster Heads and other Nodes");
   PRINT6ADDR(&UIP_IP_BUF->srcipaddr);
   PRINTF("\n");
-
-  // Update my cluster_id
-  d = rpl_get_any_dag();
-  d->instance->cluster_id = cluster_id;
-  PRINTF("RPL: Updated my cluster id: %u\n", d->instance->cluster_id);
-
 #endif /* DEBUG */
   uip_len = 0;
 }
 /*---------------------------------------------------------------------------*/
 void
-dao_ack_output(rpl_instance_t *instance, uip_ipaddr_t *dest, uint8_t sequence, uint8_t cluster_id)
+dao_ack_output(rpl_instance_t *instance, uip_ipaddr_t *dest, uint8_t sequence, int cluster_id)
 {
   unsigned char *buffer;
-  rpl_dag_t *d;
+ 
+  PRINTF("RPL: Sending a DAO ACK with sequence number and cluster id %d to ", sequence, cluster_id);
   
-  d = rpl_get_any_dag();
-  if (d->rank == ROOT_RANK(default_instance)) {
-    PRINTF("RPL: I am a root. I will set new cluster id for cluster head\n");
-    PRINTF("RPL: Assume that the cluster IDs of the clusters is same as the node ID of the clusterhead.\n");
-    cluster_id = dest->u8[15];
+  PRINT6ADDR(dest);
+  PRINTF("\n");
+ 
+  if(cd == 256)
+   {
+    cluster_id = rand();
+   }
+  else
+  {
+  cluster_id = cluster_id;
   }
-  else {
-    PRINTF("RPL: I am not a root, I'm a cluster head. I will send my cluster id to my children\n");
-    cluster_id = instance->cluster_id;
-  }
-
-  PRINTF("RPL: Sending a DAO ACK with sequence number %d and cluster id %d to \n", sequence, cluster_id);
   
-  PRINTF("SeRI: Providing Cluster ID to the Cluster Heads and other Nodes \n");
+  PRINTF("SeRI: Providing Cluster ID to the Cluster Heads and other Nodes");
   buffer = UIP_ICMP_PAYLOAD;
 
   buffer[0] = instance->instance_id;

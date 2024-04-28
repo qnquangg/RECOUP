@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, Loughborough University - Computer Science
+ * Copyright (c) 2014, VUB - ETRO
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,40 +31,61 @@
 
 /**
  * \file
- *         Project specific configuration defines for the RPl multicast
- *         example.
+ *         Header file for 'Bidirectional Multicast RPL Forwarding' (BMRF)
  *
  * \author
- *         George Oikonomou - <oikonomou@users.sourceforge.net>
+ *         Guillermo Gastón Lorente
  */
 
-#ifndef PROJECT_CONF_H_
-#define PROJECT_CONF_H_
+#ifndef BMRF_H_
+#define BMRF_H_
 
-#include "net/ipv6/multicast/uip-mcast6-engines.h"
+#include "contiki-conf.h"
 
-/* Change this to switch engines. Engine codes in uip-mcast6-engines.h */
-#define UIP_MCAST6_CONF_ENGINE UIP_MCAST6_ENGINE_ESMRF
-// #define BMRF_CONF_MODE BMRF_BROADCAST_MODE
+#include <stdint.h>
 
-/* For Imin: Use 16 over NullRDC, 64 over Contiki MAC */
-#define ROLL_TM_CONF_IMIN_1         64
+#define BMRF_UNICAST_MODE      0
+#define BMRF_BROADCAST_MODE    1
+#define BMRF_MIXED_MODE        2
 
-#undef UIP_CONF_IPV6_RPL
-#undef UIP_CONF_ND6_SEND_RA
-#undef UIP_CONF_ROUTER
-#define UIP_CONF_IPV6_RPL            1
-#define UIP_CONF_ND6_SEND_RA         0
-#define UIP_CONF_ROUTER              1
-#define UIP_MCAST6_ROUTE_CONF_ROUTES 1
+/*---------------------------------------------------------------------------*/
+/* Configuration */
+/*---------------------------------------------------------------------------*/
+/* LL forwarding mode */
+#ifdef BMRF_CONF_MODE
+#define BMRF_MODE              BMRF_CONF_MODE
+#else
+#define BMRF_MODE              BMRF_MIXED_MODE
+#endif /* BMRF_CONF_MODE */
 
-#undef UIP_CONF_TCP
-#define UIP_CONF_TCP 0
+#if BMRF_MODE == BMRF_MIXED_MODE
+#ifdef BMRF_CONF_BROADCAST_THRESHOLD
+#define BMRF_BROADCAST_THRESHOLD    BMRF_CONF_BROADCAST_THRESHOLD
+#else
+#define BMRF_BROADCAST_THRESHOLD    3
+#endif /* BMRF_CONF_BROADCAST_THRESHOLD */
+#endif /* BMRF_MODE */
 
-/* Code/RAM footprint savings so that things will fit on our device */
-#undef UIP_CONF_DS6_NBR_NBU
-#undef UIP_CONF_DS6_ROUTE_NBU
-#define UIP_CONF_DS6_NBR_NBU        10
-#define UIP_CONF_DS6_ROUTE_NBU      10
+/* Fmin */
+#ifdef BMRF_CONF_MIN_FWD_DELAY
+#define BMRF_MIN_FWD_DELAY BMRF_CONF_MIN_FWD_DELAY
+#else
+#define BMRF_MIN_FWD_DELAY 4
+#endif
 
-#endif /* PROJECT_CONF_H_ */
+/* Max Spread */
+#ifdef BMRF_CONF_MAX_SPREAD
+#define BMRF_MAX_SPREAD BMRF_CONF_MAX_SPREAD
+#else
+#define BMRF_MAX_SPREAD 4
+#endif
+
+/*---------------------------------------------------------------------------*/
+/* Stats datatype */
+/*---------------------------------------------------------------------------*/
+struct bmrf_stats {
+  UIP_MCAST6_STATS_DATATYPE bmrf_fwd_brdcst; /* Forwarded by us with LL Broadcast*/
+  UIP_MCAST6_STATS_DATATYPE bmrf_fwd_uncst;  /* Forwarded by us with LL Unicast*/
+};
+
+#endif /* BMRF_H_ */

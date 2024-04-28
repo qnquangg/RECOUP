@@ -218,7 +218,6 @@ struct rpl_dio {
   uint8_t mop;
   uint8_t preference;
   uint8_t version;
-  uint8_t cluster_id;
   uint8_t instance_id;
   uint8_t dtsn;
   uint8_t dag_intdoubl;
@@ -266,7 +265,7 @@ void dis_output(uip_ipaddr_t *addr);
 void dio_output(rpl_instance_t *, uip_ipaddr_t *uc_addr);
 void dao_output(rpl_parent_t *, uint8_t lifetime);
 void dao_output_target(rpl_parent_t *, uip_ipaddr_t *, uint8_t lifetime);
-void dao_ack_output(rpl_instance_t *, uip_ipaddr_t *, uint8_t, uint8_t);
+void dao_ack_output(rpl_instance_t *, uip_ipaddr_t *, uint8_t, int);
 void rpl_icmp6_register_handlers(void);
 
 /* RPL logic functions. */
@@ -311,6 +310,8 @@ void rpl_schedule_dao(rpl_instance_t *);
 void rpl_schedule_dao_immediately(rpl_instance_t *);
 void rpl_cancel_dao(rpl_instance_t *instance);
 #if UIP_MCAST6_ENGINE == UIP_MCAST6_ENGINE_SeRI
+void rpl_schedule_dao_immediately_default_instance(void);
+#elif UIP_MCAST6_ENGINE == UIP_MCAST6_ENGINE_BMRF
 void rpl_schedule_dao_immediately_default_instance(void);
 #endif
 
