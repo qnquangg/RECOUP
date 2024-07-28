@@ -89,6 +89,29 @@
       <moteinterface>org.contikios.cooja.mspmote.interfaces.MspDebugOutput</moteinterface>
       <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyTemperature</moteinterface>
     </motetype>
+    <motetype>
+      org.contikios.cooja.mspmote.SkyMoteType
+      <identifier>sky4</identifier>
+      <description>internal-seed-button</description>
+      <source EXPORT="discard">[CONTIKI_DIR]/examples/ipv6/multicast/simulations-bmrf/internal-seed-button.c</source>
+      <commands EXPORT="discard">make internal-seed-button.sky TARGET=sky</commands>
+      <firmware EXPORT="copy">[CONTIKI_DIR]/examples/ipv6/multicast/simulations-bmrf/internal-seed-button.sky</firmware>
+      <moteinterface>org.contikios.cooja.interfaces.Position</moteinterface>
+      <moteinterface>org.contikios.cooja.interfaces.RimeAddress</moteinterface>
+      <moteinterface>org.contikios.cooja.interfaces.IPAddress</moteinterface>
+      <moteinterface>org.contikios.cooja.interfaces.Mote2MoteRelations</moteinterface>
+      <moteinterface>org.contikios.cooja.interfaces.MoteAttributes</moteinterface>
+      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspClock</moteinterface>
+      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspMoteID</moteinterface>
+      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyButton</moteinterface>
+      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyFlash</moteinterface>
+      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyCoffeeFilesystem</moteinterface>
+      <moteinterface>org.contikios.cooja.mspmote.interfaces.Msp802154Radio</moteinterface>
+      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspSerial</moteinterface>
+      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyLED</moteinterface>
+      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspDebugOutput</moteinterface>
+      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyTemperature</moteinterface>
+    </motetype>
     <mote>
       <breakpoints />
       <interface_config>
@@ -229,11 +252,25 @@
       </interface_config>
       <motetype_identifier>sky3</motetype_identifier>
     </mote>
+    <mote>
+      <breakpoints />
+      <interface_config>
+        org.contikios.cooja.interfaces.Position
+        <x>-25.008268068542108</x>
+        <y>-30.82648422597737</y>
+        <z>0.0</z>
+      </interface_config>
+      <interface_config>
+        org.contikios.cooja.mspmote.interfaces.MspMoteID
+        <id>11</id>
+      </interface_config>
+      <motetype_identifier>sky4</motetype_identifier>
+    </mote>
   </simulation>
   <plugin>
     org.contikios.cooja.plugins.SimControl
     <width>398</width>
-    <z>2</z>
+    <z>0</z>
     <height>160</height>
     <location_x>1519</location_x>
     <location_y>596</location_y>
@@ -247,10 +284,10 @@
       <skin>org.contikios.cooja.plugins.skins.MoteTypeVisualizerSkin</skin>
       <skin>org.contikios.cooja.plugins.skins.GridVisualizerSkin</skin>
       <skin>org.contikios.cooja.plugins.skins.UDGMVisualizerSkin</skin>
-      <viewport>1.5370306441067594 0.0 0.0 1.5370306441067594 53.9581695575327 62.95891242280775</viewport>
+      <viewport>1.319938412595161 0.0 0.0 1.319938412595161 72.0636807668812 100.91678283839333</viewport>
     </plugin_config>
     <width>322</width>
-    <z>0</z>
+    <z>2</z>
     <height>349</height>
     <location_x>1</location_x>
     <location_y>1</location_y>
@@ -263,7 +300,7 @@
       <coloring />
     </plugin_config>
     <width>669</width>
-    <z>5</z>
+    <z>1</z>
     <height>341</height>
     <location_x>318</location_x>
     <location_y>2</location_y>
@@ -281,6 +318,7 @@
       <mote>7</mote>
       <mote>8</mote>
       <mote>9</mote>
+      <mote>10</mote>
       <showRadioRXTX />
       <showRadioChannels />
       <showRadioHW />
@@ -303,7 +341,7 @@
       <decorations>true</decorations>
     </plugin_config>
     <width>398</width>
-    <z>3</z>
+    <z>5</z>
     <height>160</height>
     <location_x>1520</location_x>
     <location_y>434</location_y>
@@ -430,7 +468,7 @@ while(true){&#xD;
       <active>true</active>
     </plugin_config>
     <width>528</width>
-    <z>1</z>
+    <z>4</z>
     <height>796</height>
     <location_x>989</location_x>
     <location_y>1</location_y>
@@ -438,7 +476,7 @@ while(true){&#xD;
   <plugin>
     PowerTracker
     <width>400</width>
-    <z>4</z>
+    <z>3</z>
     <height>438</height>
     <location_x>1520</location_x>
     <location_y>-4</location_y>

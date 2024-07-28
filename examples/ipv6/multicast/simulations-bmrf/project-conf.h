@@ -31,10 +31,11 @@
 
 /**
  * \file
- *         Project specific configuration defines for the RPl multicast simulations
+ *         Project specific configuration defines for the RPl multicast
+ *         example.
  *
  * \author
- *         Guillermo Gastón
+ *         George Oikonomou - <oikonomou@users.sourceforge.net>
  */
 
 #ifndef PROJECT_CONF_H_
@@ -45,7 +46,7 @@
 /* Change this to switch engines. Engine codes in uip-mcast6-engines.h */
 #define UIP_MCAST6_CONF_ENGINE UIP_MCAST6_ENGINE_BMRF
 #define BMRF_CONF_MODE BMRF_MIXED_MODE
-#define BMRF_CONF_BROADCAST_THRESHOLD   1
+#define BMRF_CONF_BROADCAST_THRESHOLD   2
 
 /* For Imin: Use 16 over NullRDC, 64 over Contiki MAC */
 #define ROLL_TM_CONF_IMIN_1         64
@@ -57,8 +58,6 @@
 #define UIP_CONF_ND6_SEND_RA         0
 #define UIP_CONF_ROUTER              1
 #define UIP_MCAST6_ROUTE_CONF_ROUTES 8
-#define CSMA_CONF_MAX_NEIGHBOR_QUEUES UIP_MCAST6_ROUTE_CONF_ROUTES
-//#define QUEUEBUF_CONF_NUM 10
 
 #undef UIP_CONF_TCP
 #define UIP_CONF_TCP 0
@@ -69,12 +68,12 @@
 #define UIP_CONF_DS6_NBR_NBU        10
 #define UIP_CONF_DS6_ROUTE_NBU      10
 
-/* Enable simulation stats */
-#define SIMSTATS_CONF_ENABLED 1
-
-/* Simulation parameters */
-#define MCAST_CONF_MESSAGES 100
-#define MCAST_CONF_SEND_INTERVAL 3
-#define MCAST_CONF_START_DELAY 60
-
 #endif /* PROJECT_CONF_H_ */
+
+//
+// #define UIP_MCAST6_ENGINE_NONE        0 /* Selecting this disables mcast */
+// #define UIP_MCAST6_ENGINE_SMRF        1
+// #define UIP_MCAST6_ENGINE_ROLL_TM     2
+// #define UIP_MCAST6_ENGINE_SeRI        3
+// #define UIP_MCAST6_ENGINE_BMRF        4
+// #define UIP_MCAST6_ENGINE_ESMRF       5 /**< The ESMRF engine */
