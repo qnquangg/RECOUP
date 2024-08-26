@@ -60,15 +60,11 @@
 #else
 #define SEND_INTERVAL CLOCK_SECOND
 #endif
-
-#if (SENDER_IS == ROOT)
 #ifdef MCAST_CONF_MESSAGES
 #define ITERATIONS MCAST_CONF_MESSAGES /* messages */
-#endif
 #else
-#define ITERATIONS 0
+#define ITERATIONS 10
 #endif
-
 
 /* Start sending messages START_DELAY secs after we start so that routing can
  * converge */
@@ -180,7 +176,6 @@ PROCESS_THREAD(rpl_root_process, ev, data)
     if(etimer_expired(&et)) {
       if(seq_id == ITERATIONS) {
         etimer_stop(&et);
-#if (SENDER_IS == ROOT)
         PRINTF("n; %lu; %lu; %lu; %lu; %lu; %lu\n",
           SIMSTATS_GET(lltx),
           SIMSTATS_GET(pkttx),
@@ -188,7 +183,6 @@ PROCESS_THREAD(rpl_root_process, ev, data)
           energest_type_time(ENERGEST_TYPE_TRANSMIT),
           energest_type_time(ENERGEST_TYPE_LPM),
           energest_type_time(ENERGEST_TYPE_CPU));
-#endif
       } else {
         multicast_send();
         etimer_set(&et, SEND_INTERVAL);

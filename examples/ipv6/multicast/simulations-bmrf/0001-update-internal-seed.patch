@@ -1,0 +1,2140 @@
+From c73a2d395355c6d3258a0e5cfdf23c3928099f9b Mon Sep 17 00:00:00 2001
+From: qnquangg <quang.ng193@gmail.com>
+Date: Sun, 28 Jul 2024 20:23:41 +0200
+Subject: [PATCH] update internal seed
+
+---
+ .../simulations-bmrf/20240728_testscript_v1.csc    |  66 +--
+ ...728_testscript_v2-with-internal-seed-button.csc | 485 +++++++++++++++++++++
+ examples/ipv6/multicast/simulations-bmrf/Makefile  |   3 +-
+ .../ipv6/multicast/simulations-bmrf/intermediate.c |  33 --
+ .../simulations-bmrf/internal-seed-button.c        | 147 +++++++
+ .../multicast/simulations-bmrf/internal-seed.c     | 152 +++++++
+ .../simulations-bmrf/multicast-bmrf-button.csc     | 376 ++++++++++++++++
+ .../multicast/simulations-bmrf/multicast-bmrf.csc  | 340 +++++++++++++++
+ .../ipv6/multicast/simulations-bmrf/multicast.csc  | 257 +++++++++++
+ .../ipv6/multicast/simulations-bmrf/project-conf.h |  25 +-
+ 10 files changed, 1805 insertions(+), 79 deletions(-)
+ create mode 100644 examples/ipv6/multicast/simulations-bmrf/20240728_testscript_v2-with-internal-seed-button.csc
+ create mode 100644 examples/ipv6/multicast/simulations-bmrf/internal-seed-button.c
+ create mode 100644 examples/ipv6/multicast/simulations-bmrf/internal-seed.c
+ create mode 100644 examples/ipv6/multicast/simulations-bmrf/multicast-bmrf-button.csc
+ create mode 100644 examples/ipv6/multicast/simulations-bmrf/multicast-bmrf.csc
+ create mode 100644 examples/ipv6/multicast/simulations-bmrf/multicast.csc
+
+diff --git a/examples/ipv6/multicast/simulations-bmrf/20240728_testscript_v1.csc b/examples/ipv6/multicast/simulations-bmrf/20240728_testscript_v1.csc
+index c5231d8..7c47c58 100644
+--- a/examples/ipv6/multicast/simulations-bmrf/20240728_testscript_v1.csc
++++ b/examples/ipv6/multicast/simulations-bmrf/20240728_testscript_v1.csc
+@@ -107,8 +107,8 @@
+       <breakpoints />
+       <interface_config>
+         org.contikios.cooja.interfaces.Position
+-        <x>37.64654673425964</x>
+-        <y>57.666291894794995</y>
++        <x>1.884349797361974</x>
++        <y>97.31103510067786</y>
+         <z>0.0</z>
+       </interface_config>
+       <interface_config>
+@@ -121,8 +121,8 @@
+       <breakpoints />
+       <interface_config>
+         org.contikios.cooja.interfaces.Position
+-        <x>14.682757591088702</x>
+-        <y>7.001763753673407</y>
++        <x>17.285178053775432</x>
++        <y>18.712655835763705</y>
+         <z>0.0</z>
+       </interface_config>
+       <interface_config>
+@@ -135,8 +135,8 @@
+       <breakpoints />
+       <interface_config>
+         org.contikios.cooja.interfaces.Position
+-        <x>54.80301279635624</x>
+-        <y>29.79989431720922</y>
++        <x>76.44165701388113</x>
++        <y>19.15527173024751</y>
+         <z>0.0</z>
+       </interface_config>
+       <interface_config>
+@@ -149,8 +149,8 @@
+       <breakpoints />
+       <interface_config>
+         org.contikios.cooja.interfaces.Position
+-        <x>90.59172503323498</x>
+-        <y>43.16832797650697</y>
++        <x>85.38688410786152</x>
++        <y>-16.036737549616205</y>
+         <z>0.0</z>
+       </interface_config>
+       <interface_config>
+@@ -163,8 +163,8 @@
+       <breakpoints />
+       <interface_config>
+         org.contikios.cooja.interfaces.Position
+-        <x>86.03991515403403</x>
+-        <y>28.99629367505616</y>
++        <x>145.89558579582888</x>
++        <y>-5.485777455543052</y>
+         <z>0.0</z>
+       </interface_config>
+       <interface_config>
+@@ -177,8 +177,8 @@
+       <breakpoints />
+       <interface_config>
+         org.contikios.cooja.interfaces.Position
+-        <x>65.05916474139833</x>
+-        <y>60.63180018218593</y>
++        <x>31.2276987264708</x>
++        <y>108.7765787418905</y>
+         <z>0.0</z>
+       </interface_config>
+       <interface_config>
+@@ -191,8 +191,8 @@
+       <breakpoints />
+       <interface_config>
+         org.contikios.cooja.interfaces.Position
+-        <x>38.3969895124965</x>
+-        <y>26.749061948570805</y>
++        <x>-2.3742644029289828</x>
++        <y>-8.492048483645368</y>
+         <z>0.0</z>
+       </interface_config>
+       <interface_config>
+@@ -205,8 +205,8 @@
+       <breakpoints />
+       <interface_config>
+         org.contikios.cooja.interfaces.Position
+-        <x>98.94549496976444</x>
+-        <y>63.09413235937984</y>
++        <x>109.35517682051133</x>
++        <y>1.2866463705699331</y>
+         <z>0.0</z>
+       </interface_config>
+       <interface_config>
+@@ -219,8 +219,8 @@
+       <breakpoints />
+       <interface_config>
+         org.contikios.cooja.interfaces.Position
+-        <x>21.898178040417015</x>
+-        <y>54.47192365353405</y>
++        <x>27.103018965790483</x>
++        <y>69.43584131398276</y>
+         <z>0.0</z>
+       </interface_config>
+       <interface_config>
+@@ -232,11 +232,11 @@
+   </simulation>
+   <plugin>
+     org.contikios.cooja.plugins.SimControl
+-    <width>280</width>
+-    <z>3</z>
++    <width>398</width>
++    <z>2</z>
+     <height>160</height>
+-    <location_x>1523</location_x>
+-    <location_y>599</location_y>
++    <location_x>1519</location_x>
++    <location_y>596</location_y>
+   </plugin>
+   <plugin>
+     org.contikios.cooja.plugins.Visualizer
+@@ -247,10 +247,10 @@
+       <skin>org.contikios.cooja.plugins.skins.MoteTypeVisualizerSkin</skin>
+       <skin>org.contikios.cooja.plugins.skins.GridVisualizerSkin</skin>
+       <skin>org.contikios.cooja.plugins.skins.UDGMVisualizerSkin</skin>
+-      <viewport>2.65598895301648 0.0 0.0 2.65598895301648 -7.184283004583447 55.39300066661177</viewport>
++      <viewport>1.5370306441067594 0.0 0.0 1.5370306441067594 53.9581695575327 62.95891242280775</viewport>
+     </plugin_config>
+     <width>322</width>
+-    <z>6</z>
++    <z>0</z>
+     <height>349</height>
+     <location_x>1</location_x>
+     <location_y>1</location_y>
+@@ -263,7 +263,7 @@
+       <coloring />
+     </plugin_config>
+     <width>669</width>
+-    <z>4</z>
++    <z>5</z>
+     <height>341</height>
+     <location_x>318</location_x>
+     <location_y>2</location_y>
+@@ -282,12 +282,16 @@
+       <mote>8</mote>
+       <mote>9</mote>
+       <showRadioRXTX />
++      <showRadioChannels />
+       <showRadioHW />
+       <showLEDs />
++      <showLogOutput />
++      <showWatchpoints />
++      <executionDetails />
+       <zoomfactor>500.0</zoomfactor>
+     </plugin_config>
+     <width>987</width>
+-    <z>0</z>
++    <z>6</z>
+     <height>450</height>
+     <location_x>0</location_x>
+     <location_y>347</location_y>
+@@ -298,10 +302,10 @@
+       <notes>Enter notes here</notes>
+       <decorations>true</decorations>
+     </plugin_config>
+-    <width>382</width>
+-    <z>5</z>
++    <width>398</width>
++    <z>3</z>
+     <height>160</height>
+-    <location_x>1527</location_x>
++    <location_x>1520</location_x>
+     <location_y>434</location_y>
+   </plugin>
+   <plugin>
+@@ -426,7 +430,7 @@ while(true){&#xD;
+       <active>true</active>
+     </plugin_config>
+     <width>528</width>
+-    <z>2</z>
++    <z>1</z>
+     <height>796</height>
+     <location_x>989</location_x>
+     <location_y>1</location_y>
+@@ -434,7 +438,7 @@ while(true){&#xD;
+   <plugin>
+     PowerTracker
+     <width>400</width>
+-    <z>1</z>
++    <z>4</z>
+     <height>438</height>
+     <location_x>1520</location_x>
+     <location_y>-4</location_y>
+diff --git a/examples/ipv6/multicast/simulations-bmrf/20240728_testscript_v2-with-internal-seed-button.csc b/examples/ipv6/multicast/simulations-bmrf/20240728_testscript_v2-with-internal-seed-button.csc
+new file mode 100644
+index 0000000..da399a5
+--- /dev/null
++++ b/examples/ipv6/multicast/simulations-bmrf/20240728_testscript_v2-with-internal-seed-button.csc
+@@ -0,0 +1,485 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<simconf>
++  <project EXPORT="discard">[APPS_DIR]/mrm</project>
++  <project EXPORT="discard">[APPS_DIR]/mspsim</project>
++  <project EXPORT="discard">[APPS_DIR]/avrora</project>
++  <project EXPORT="discard">[APPS_DIR]/serial_socket</project>
++  <project EXPORT="discard">[APPS_DIR]/collect-view</project>
++  <project EXPORT="discard">[APPS_DIR]/powertracker</project>
++  <simulation>
++    <title>simulation-bmrf-v1</title>
++    <randomseed>123456</randomseed>
++    <motedelay_us>1000000</motedelay_us>
++    <radiomedium>
++      org.contikios.cooja.radiomediums.UDGM
++      <transmitting_range>50.0</transmitting_range>
++      <interference_range>100.0</interference_range>
++      <success_ratio_tx>1.0</success_ratio_tx>
++      <success_ratio_rx>1.0</success_ratio_rx>
++    </radiomedium>
++    <events>
++      <logoutput>40000</logoutput>
++    </events>
++    <motetype>
++      org.contikios.cooja.mspmote.SkyMoteType
++      <identifier>sky1</identifier>
++      <description>root</description>
++      <source EXPORT="discard">[CONTIKI_DIR]/examples/ipv6/multicast/simulations-bmrf/root.c</source>
++      <commands EXPORT="discard">make root.sky TARGET=sky</commands>
++      <firmware EXPORT="copy">[CONTIKI_DIR]/examples/ipv6/multicast/simulations-bmrf/root.sky</firmware>
++      <moteinterface>org.contikios.cooja.interfaces.Position</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.RimeAddress</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.IPAddress</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.Mote2MoteRelations</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.MoteAttributes</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspClock</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspMoteID</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyButton</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyFlash</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyCoffeeFilesystem</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.Msp802154Radio</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspSerial</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyLED</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspDebugOutput</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyTemperature</moteinterface>
++    </motetype>
++    <motetype>
++      org.contikios.cooja.mspmote.SkyMoteType
++      <identifier>sky2</identifier>
++      <description>sink</description>
++      <source EXPORT="discard">[CONTIKI_DIR]/examples/ipv6/multicast/simulations-bmrf/sink.c</source>
++      <commands EXPORT="discard">make sink.sky TARGET=sky</commands>
++      <firmware EXPORT="copy">[CONTIKI_DIR]/examples/ipv6/multicast/simulations-bmrf/sink.sky</firmware>
++      <moteinterface>org.contikios.cooja.interfaces.Position</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.RimeAddress</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.IPAddress</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.Mote2MoteRelations</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.MoteAttributes</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspClock</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspMoteID</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyButton</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyFlash</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyCoffeeFilesystem</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.Msp802154Radio</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspSerial</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyLED</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspDebugOutput</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyTemperature</moteinterface>
++    </motetype>
++    <motetype>
++      org.contikios.cooja.mspmote.SkyMoteType
++      <identifier>sky3</identifier>
++      <description>intermediate</description>
++      <source EXPORT="discard">[CONTIKI_DIR]/examples/ipv6/multicast/simulations-bmrf/intermediate.c</source>
++      <commands EXPORT="discard">make intermediate.sky TARGET=sky</commands>
++      <firmware EXPORT="copy">[CONTIKI_DIR]/examples/ipv6/multicast/simulations-bmrf/intermediate.sky</firmware>
++      <moteinterface>org.contikios.cooja.interfaces.Position</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.RimeAddress</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.IPAddress</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.Mote2MoteRelations</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.MoteAttributes</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspClock</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspMoteID</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyButton</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyFlash</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyCoffeeFilesystem</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.Msp802154Radio</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspSerial</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyLED</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspDebugOutput</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyTemperature</moteinterface>
++    </motetype>
++    <motetype>
++      org.contikios.cooja.mspmote.SkyMoteType
++      <identifier>sky4</identifier>
++      <description>internal-seed-button</description>
++      <source EXPORT="discard">[CONTIKI_DIR]/examples/ipv6/multicast/simulations-bmrf/internal-seed-button.c</source>
++      <commands EXPORT="discard">make internal-seed-button.sky TARGET=sky</commands>
++      <firmware EXPORT="copy">[CONTIKI_DIR]/examples/ipv6/multicast/simulations-bmrf/internal-seed-button.sky</firmware>
++      <moteinterface>org.contikios.cooja.interfaces.Position</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.RimeAddress</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.IPAddress</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.Mote2MoteRelations</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.MoteAttributes</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspClock</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspMoteID</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyButton</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyFlash</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyCoffeeFilesystem</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.Msp802154Radio</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspSerial</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyLED</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspDebugOutput</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyTemperature</moteinterface>
++    </motetype>
++    <mote>
++      <breakpoints />
++      <interface_config>
++        org.contikios.cooja.interfaces.Position
++        <x>49.196508172689036</x>
++        <y>45.056409805419335</y>
++        <z>0.0</z>
++      </interface_config>
++      <interface_config>
++        org.contikios.cooja.mspmote.interfaces.MspMoteID
++        <id>1</id>
++      </interface_config>
++      <motetype_identifier>sky1</motetype_identifier>
++    </mote>
++    <mote>
++      <breakpoints />
++      <interface_config>
++        org.contikios.cooja.interfaces.Position
++        <x>1.884349797361974</x>
++        <y>97.31103510067786</y>
++        <z>0.0</z>
++      </interface_config>
++      <interface_config>
++        org.contikios.cooja.mspmote.interfaces.MspMoteID
++        <id>2</id>
++      </interface_config>
++      <motetype_identifier>sky2</motetype_identifier>
++    </mote>
++    <mote>
++      <breakpoints />
++      <interface_config>
++        org.contikios.cooja.interfaces.Position
++        <x>17.285178053775432</x>
++        <y>18.712655835763705</y>
++        <z>0.0</z>
++      </interface_config>
++      <interface_config>
++        org.contikios.cooja.mspmote.interfaces.MspMoteID
++        <id>3</id>
++      </interface_config>
++      <motetype_identifier>sky2</motetype_identifier>
++    </mote>
++    <mote>
++      <breakpoints />
++      <interface_config>
++        org.contikios.cooja.interfaces.Position
++        <x>76.44165701388113</x>
++        <y>19.15527173024751</y>
++        <z>0.0</z>
++      </interface_config>
++      <interface_config>
++        org.contikios.cooja.mspmote.interfaces.MspMoteID
++        <id>4</id>
++      </interface_config>
++      <motetype_identifier>sky2</motetype_identifier>
++    </mote>
++    <mote>
++      <breakpoints />
++      <interface_config>
++        org.contikios.cooja.interfaces.Position
++        <x>85.38688410786152</x>
++        <y>-16.036737549616205</y>
++        <z>0.0</z>
++      </interface_config>
++      <interface_config>
++        org.contikios.cooja.mspmote.interfaces.MspMoteID
++        <id>5</id>
++      </interface_config>
++      <motetype_identifier>sky2</motetype_identifier>
++    </mote>
++    <mote>
++      <breakpoints />
++      <interface_config>
++        org.contikios.cooja.interfaces.Position
++        <x>145.89558579582888</x>
++        <y>-5.485777455543052</y>
++        <z>0.0</z>
++      </interface_config>
++      <interface_config>
++        org.contikios.cooja.mspmote.interfaces.MspMoteID
++        <id>6</id>
++      </interface_config>
++      <motetype_identifier>sky2</motetype_identifier>
++    </mote>
++    <mote>
++      <breakpoints />
++      <interface_config>
++        org.contikios.cooja.interfaces.Position
++        <x>31.2276987264708</x>
++        <y>108.7765787418905</y>
++        <z>0.0</z>
++      </interface_config>
++      <interface_config>
++        org.contikios.cooja.mspmote.interfaces.MspMoteID
++        <id>7</id>
++      </interface_config>
++      <motetype_identifier>sky3</motetype_identifier>
++    </mote>
++    <mote>
++      <breakpoints />
++      <interface_config>
++        org.contikios.cooja.interfaces.Position
++        <x>-2.3742644029289828</x>
++        <y>-8.492048483645368</y>
++        <z>0.0</z>
++      </interface_config>
++      <interface_config>
++        org.contikios.cooja.mspmote.interfaces.MspMoteID
++        <id>8</id>
++      </interface_config>
++      <motetype_identifier>sky3</motetype_identifier>
++    </mote>
++    <mote>
++      <breakpoints />
++      <interface_config>
++        org.contikios.cooja.interfaces.Position
++        <x>109.35517682051133</x>
++        <y>1.2866463705699331</y>
++        <z>0.0</z>
++      </interface_config>
++      <interface_config>
++        org.contikios.cooja.mspmote.interfaces.MspMoteID
++        <id>9</id>
++      </interface_config>
++      <motetype_identifier>sky3</motetype_identifier>
++    </mote>
++    <mote>
++      <breakpoints />
++      <interface_config>
++        org.contikios.cooja.interfaces.Position
++        <x>27.103018965790483</x>
++        <y>69.43584131398276</y>
++        <z>0.0</z>
++      </interface_config>
++      <interface_config>
++        org.contikios.cooja.mspmote.interfaces.MspMoteID
++        <id>10</id>
++      </interface_config>
++      <motetype_identifier>sky3</motetype_identifier>
++    </mote>
++    <mote>
++      <breakpoints />
++      <interface_config>
++        org.contikios.cooja.interfaces.Position
++        <x>-25.008268068542108</x>
++        <y>-30.82648422597737</y>
++        <z>0.0</z>
++      </interface_config>
++      <interface_config>
++        org.contikios.cooja.mspmote.interfaces.MspMoteID
++        <id>11</id>
++      </interface_config>
++      <motetype_identifier>sky4</motetype_identifier>
++    </mote>
++  </simulation>
++  <plugin>
++    org.contikios.cooja.plugins.SimControl
++    <width>398</width>
++    <z>0</z>
++    <height>160</height>
++    <location_x>1519</location_x>
++    <location_y>596</location_y>
++  </plugin>
++  <plugin>
++    org.contikios.cooja.plugins.Visualizer
++    <plugin_config>
++      <moterelations>true</moterelations>
++      <skin>org.contikios.cooja.plugins.skins.TrafficVisualizerSkin</skin>
++      <skin>org.contikios.cooja.plugins.skins.IDVisualizerSkin</skin>
++      <skin>org.contikios.cooja.plugins.skins.MoteTypeVisualizerSkin</skin>
++      <skin>org.contikios.cooja.plugins.skins.GridVisualizerSkin</skin>
++      <skin>org.contikios.cooja.plugins.skins.UDGMVisualizerSkin</skin>
++      <viewport>1.319938412595161 0.0 0.0 1.319938412595161 72.0636807668812 100.91678283839333</viewport>
++    </plugin_config>
++    <width>322</width>
++    <z>2</z>
++    <height>349</height>
++    <location_x>1</location_x>
++    <location_y>1</location_y>
++  </plugin>
++  <plugin>
++    org.contikios.cooja.plugins.LogListener
++    <plugin_config>
++      <filter />
++      <formatted_time />
++      <coloring />
++    </plugin_config>
++    <width>669</width>
++    <z>1</z>
++    <height>341</height>
++    <location_x>318</location_x>
++    <location_y>2</location_y>
++  </plugin>
++  <plugin>
++    org.contikios.cooja.plugins.TimeLine
++    <plugin_config>
++      <mote>0</mote>
++      <mote>1</mote>
++      <mote>2</mote>
++      <mote>3</mote>
++      <mote>4</mote>
++      <mote>5</mote>
++      <mote>6</mote>
++      <mote>7</mote>
++      <mote>8</mote>
++      <mote>9</mote>
++      <mote>10</mote>
++      <showRadioRXTX />
++      <showRadioChannels />
++      <showRadioHW />
++      <showLEDs />
++      <showLogOutput />
++      <showWatchpoints />
++      <executionDetails />
++      <zoomfactor>500.0</zoomfactor>
++    </plugin_config>
++    <width>987</width>
++    <z>6</z>
++    <height>450</height>
++    <location_x>0</location_x>
++    <location_y>347</location_y>
++  </plugin>
++  <plugin>
++    org.contikios.cooja.plugins.Notes
++    <plugin_config>
++      <notes>Enter notes here</notes>
++      <decorations>true</decorations>
++    </plugin_config>
++    <width>398</width>
++    <z>5</z>
++    <height>160</height>
++    <location_x>1520</location_x>
++    <location_y>434</location_y>
++  </plugin>
++  <plugin>
++    org.contikios.cooja.plugins.ScriptRunner
++    <plugin_config>
++      <script>//import Java Package to JavaScript&#xD;
++importPackage(java.io);&#xD;
++&#xD;
++simulation_time = 500000;&#xD;
++&#xD;
++TIMEOUT(500000, timeout_func()); /* milliseconds */&#xD;
++&#xD;
++outs = new Array(100);&#xD;
++total_time = 0;&#xD;
++total_ins = 0;&#xD;
++&#xD;
++pdr = 0;&#xD;
++frame_tx = 0;&#xD;
++msg_tx = 0;&#xD;
++rx_time = 0;&#xD;
++tx_time = 0;&#xD;
++lpm_time = 0;&#xD;
++cpu_time = 0;&#xD;
++total_subscribed = 0;&#xD;
++total_nodes = 0;&#xD;
++&#xD;
++fr = new File("raw_results.csv");&#xD;
++fd = new File("delay_results.csv");&#xD;
++fs = new File("summary_results.csv");&#xD;
++//Use this if using the GUI &#xD;
++//f = new File("../../../examples/ipv6/multicast/simulations-bmrf/log.txt");&#xD;
++tfraw = new FileWriter(fr);&#xD;
++tfdelay = new FileWriter(fd);&#xD;
++tfsummary = new FileWriter(fs);&#xD;
++&#xD;
++timeout_func = function simulationEnd() {&#xD;
++  /* Extract PowerTracker statistics */&#xD;
++  plugin = mote.getSimulation().getCooja().getStartedPlugin("PowerTracker");&#xD;
++  if (plugin != null) {&#xD;
++    stats = plugin.radioStatistics();&#xD;
++    splited_stats = stats.split(/\r\n|\n|\r/);&#xD;
++    splited_on = splited_stats[0].split(" ");&#xD;
++    splited_tx = splited_stats[1].split(" ");&#xD;
++    splited_rx = splited_stats[2].split(" ");&#xD;
++    splited_int = splited_stats[3].split(" ");&#xD;
++    idle_listening = (splited_on[2]-splited_tx[2]-splited_rx[2])/(1000000*51);&#xD;
++    log.log("PowerTracker: Extracted statistics:\n"&#xD;
++     + "AVG ON " + splited_on[2]/(1000000*51) + "s " + splited_on[4] + "%" +"\n"&#xD;
++     + "AVG TX " + splited_tx[2]/(1000000*51) + "s " + splited_tx[4] + "%" + "\n"&#xD;
++     + "AVG RX " + splited_rx[2]/(1000000*51) + "s " + splited_rx[4] + "%" + "\n"&#xD;
++     + "AVG IDLE LISTENING " + idle_listening + "s " + idle_listening*100/(simulation_time/1000) + "%" + "\n"&#xD;
++     + "AVG INT " + splited_int[2]/(1000000*51) + "s " + splited_int[4] + "%" + "\n"&#xD;
++     + "\n");&#xD;
++    tfsummary.write("PowerTracker: Extracted statistics:\n"&#xD;
++    + "AVG ON " + splited_on[2]/(1000000*51) + "s " + splited_on[4] + "%" +"\n"&#xD;
++    + "AVG TX " + splited_tx[2]/(1000000*51) + "s " + splited_tx[4] + "%" + "\n"&#xD;
++    + "AVG RX " + splited_rx[2]/(1000000*51) + "s " + splited_rx[4] + "%" + "\n"&#xD;
++    + "AVG IDLE LISTENING " + idle_listening + "s " + idle_listening*100/(simulation_time/1000) + "%" + "\n"&#xD;
++    + "AVG INT " + splited_int[2]/(1000000*51) + "s " + splited_int[4] + "%" + "\n"&#xD;
++    + "\n");&#xD;
++  } else {&#xD;
++    log.log("No PowerTracker plugin\n");&#xD;
++    tfsummary.write("No PowerTracker plugin\n");&#xD;
++  }&#xD;
++  log.log("Average end-to-end delay: " + (total_time/total_ins) +"\n");&#xD;
++  log.log("Packet delivery ratio: " + (pdr/total_subscribed) + "\n");&#xD;
++  log.log("Frame transmission: " + (frame_tx/total_nodes) + "\n");&#xD;
++  log.log("Packet transmission: " + (msg_tx/total_nodes) + "\n");&#xD;
++  log.log("Rx time: " + (rx_time/total_nodes) + " = " + ((rx_time/total_nodes)/32768) + " s" + "\n");&#xD;
++  log.log("Tx time: " + (tx_time/total_nodes) + " = " + ((tx_time/total_nodes)/32768) + " s" + "\n");&#xD;
++  log.log("LPM time: " + (lpm_time/total_nodes) + " = " + ((lpm_time/total_nodes)/32768) + " s" + "\n");&#xD;
++  log.log("CPU time: " + (cpu_time/total_nodes) + " = " + ((cpu_time/total_nodes)/32768) + " s" + "\n");&#xD;
++&#xD;
++  tfsummary.write("Average end-to-end delay: " + (total_time/total_ins) +"\n");&#xD;
++  tfsummary.write("Packet delivery ratio: " + (pdr/total_subscribed) + "\n");&#xD;
++  tfsummary.write("Frame transmission: " + (frame_tx/total_nodes) + "\n");&#xD;
++  tfsummary.write("Packet transmission: " + (msg_tx/total_nodes) + "\n");&#xD;
++  tfsummary.write("Rx time: " + (rx_time/total_nodes) + " = " + ((rx_time/total_nodes)/32768) + " s" + "\n");&#xD;
++  tfsummary.write("Tx time: " + (tx_time/total_nodes) + " = " + ((tx_time/total_nodes)/32768) + " s" + "\n");&#xD;
++  tfsummary.write("LPM time: " + (lpm_time/total_nodes) + " = " + ((lpm_time/total_nodes)/32768) + " s" + "\n");&#xD;
++  tfsummary.write("CPU time: " + (cpu_time/total_nodes) + " = " + ((cpu_time/total_nodes)/32768) + " s" + "\n");&#xD;
++    &#xD;
++  tfraw.close();&#xD;
++  tfdelay.close();&#xD;
++  tfsummary.close();&#xD;
++  log.testOK();&#xD;
++}&#xD;
++&#xD;
++while(true){&#xD;
++  YIELD();&#xD;
++  time_msg = sim.getSimulationTimeMillis();&#xD;
++  message = msg.split(";");&#xD;
++  log.log(""+message[0]+"\n");&#xD;
++  if (message.length == 2) {&#xD;
++    if (message[0]=="Out") {&#xD;
++      outs[parseInt(message[1])] = time_msg;&#xD;
++      log.log("New out time\n");&#xD;
++      log.log("outs["+parseInt(message[1])+"] = "+outs[parseInt(message[1])]+" = "+time_msg+"\n");&#xD;
++    } else if (message[0]=="In") {&#xD;
++      total_time = total_time + (time_msg - outs[parseInt(message[1])]);&#xD;
++      total_ins++;&#xD;
++      log.log("Delay: "+time_msg+" + "+outs[parseInt(message[1])]+" = "+(time_msg - outs[parseInt(message[1])])+"\n");&#xD;
++      log.log(""+parseInt(message[1])+";"+id+";"+(time_msg - outs[parseInt(message[1])])+"\n");&#xD;
++      tfdelay.write(""+parseInt(message[1])+";"+id+";"+(time_msg - outs[parseInt(message[1])])+"\n");&#xD;
++    }&#xD;
++  } else if (message.length == 7) {&#xD;
++    if (message[0] != "n") {&#xD;
++      pdr += parseInt(message[0]);&#xD;
++      total_subscribed++;&#xD;
++    }&#xD;
++    time_msg_seconds = time_msg/1000;&#xD;
++    frame_tx += parseInt(message[1]);&#xD;
++    msg_tx += parseInt(message[2]);&#xD;
++    rx_time += parseInt(message[3]);&#xD;
++    tx_time += parseInt(message[4]);&#xD;
++    lpm_time += parseInt(message[5]);&#xD;
++    cpu_time += parseInt(message[6]);&#xD;
++    total_nodes++;&#xD;
++    tfraw.write((time_msg_seconds/60|0) + ":" + (time_msg_seconds % 60).toFixed(3) + ";ID:" + id + ";" + id + ";" + msg + "\n");&#xD;
++  }&#xD;
++}</script>
++      <active>true</active>
++    </plugin_config>
++    <width>528</width>
++    <z>4</z>
++    <height>796</height>
++    <location_x>989</location_x>
++    <location_y>1</location_y>
++  </plugin>
++  <plugin>
++    PowerTracker
++    <width>400</width>
++    <z>3</z>
++    <height>438</height>
++    <location_x>1520</location_x>
++    <location_y>-4</location_y>
++  </plugin>
++</simconf>
++
+diff --git a/examples/ipv6/multicast/simulations-bmrf/Makefile b/examples/ipv6/multicast/simulations-bmrf/Makefile
+index 294809c..b9aad53 100644
+--- a/examples/ipv6/multicast/simulations-bmrf/Makefile
++++ b/examples/ipv6/multicast/simulations-bmrf/Makefile
+@@ -1,8 +1,7 @@
+ DEFINES+=PROJECT_CONF_H=\"project-conf.h\"
+-PROJECT_SOURCEFILES += simstats.c cc2420.c
+ UIP_CONF_IPV6=1
+ 
+-CONTIKI_PROJECT = root intermediate sink
++CONTIKI_PROJECT = root intermediate sink internal-seed
+ all: $(CONTIKI_PROJECT)
+ 
+ CONTIKI = ../../../..
+diff --git a/examples/ipv6/multicast/simulations-bmrf/intermediate.c b/examples/ipv6/multicast/simulations-bmrf/intermediate.c
+index fdfd836..6d8f272 100644
+--- a/examples/ipv6/multicast/simulations-bmrf/intermediate.c
++++ b/examples/ipv6/multicast/simulations-bmrf/intermediate.c
+@@ -46,52 +46,19 @@
+ #include "contiki.h"
+ #include "contiki-net.h"
+ #include "net/ipv6/multicast/uip-mcast6.h"
+-#include "simstats.h"
+-
+-#define DEBUG DEBUG_PRINT
+-#include "net/ip/uip-debug.h"
+ 
+ #if !UIP_CONF_IPV6 || !UIP_CONF_ROUTER || !UIP_CONF_IPV6_MULTICAST || !UIP_CONF_IPV6_RPL
+ #error "This example can not work with the current contiki configuration"
+ #error "Check the values of: UIP_CONF_IPV6, UIP_CONF_ROUTER, UIP_CONF_IPV6_RPL"
+ #endif
+-
+-
+-#if defined(MCAST_CONF_SEND_INTERVAL) && defined(MCAST_CONF_MESSAGES) && defined(MCAST_CONF_START_DELAY)
+-#define WAIT_FOR_END ((MCAST_CONF_SEND_INTERVAL * MCAST_CONF_MESSAGES) + MCAST_CONF_START_DELAY + 63)
+-#else
+-#define WAIT_FOR_END 160 + 50
+-#endif
+-
+ /*---------------------------------------------------------------------------*/
+ PROCESS(mcast_intermediate_process, "Intermediate Process");
+ AUTOSTART_PROCESSES(&mcast_intermediate_process);
+ /*---------------------------------------------------------------------------*/
+ PROCESS_THREAD(mcast_intermediate_process, ev, data)
+ {
+-  static struct etimer et;
+-
+   PROCESS_BEGIN();
+ 
+-  etimer_set(&et, WAIT_FOR_END * CLOCK_SECOND);
+-  printf("WAIT_FOR_END: %u\n", WAIT_FOR_END);
+-
+-
+-  while(1) {
+-    PROCESS_YIELD();
+-    if(etimer_expired(&et)) {
+-      PRINTF("n; %lu; %lu; %lu; %lu; %lu; %lu\n",
+-        SIMSTATS_GET(lltx),
+-        SIMSTATS_GET(pkttx),
+-        energest_type_time(ENERGEST_TYPE_LISTEN),
+-        energest_type_time(ENERGEST_TYPE_TRANSMIT),
+-        energest_type_time(ENERGEST_TYPE_LPM),
+-        energest_type_time(ENERGEST_TYPE_CPU));
+-      etimer_stop(&et);
+-      break;
+-    }
+-  }
+-
+   PROCESS_END();
+ }
+ /*---------------------------------------------------------------------------*/
+diff --git a/examples/ipv6/multicast/simulations-bmrf/internal-seed-button.c b/examples/ipv6/multicast/simulations-bmrf/internal-seed-button.c
+new file mode 100644
+index 0000000..b50460b
+--- /dev/null
++++ b/examples/ipv6/multicast/simulations-bmrf/internal-seed-button.c
+@@ -0,0 +1,147 @@
++/*
++ * Copyright (c) 2010, Loughborough University - Computer Science
++ * All rights reserved.
++ *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions
++ * are met:
++ * 1. Redistributions of source code must retain the above copyright
++ *    notice, this list of conditions and the following disclaimer.
++ * 2. Redistributions in binary form must reproduce the above copyright
++ *    notice, this list of conditions and the following disclaimer in the
++ *    documentation and/or other materials provided with the distribution.
++ * 3. Neither the name of the Institute nor the names of its contributors
++ *    may be used to endorse or promote products derived from this software
++ *    without specific prior written permission.
++ *
++ * THIS SOFTWARE IS PROVIDED BY THE INSTITUTE AND CONTRIBUTORS ``AS IS'' AND
++ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
++ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
++ * ARE DISCLAIMED.  IN NO EVENT SHALL THE INSTITUTE OR CONTRIBUTORS BE LIABLE
++ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
++ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
++ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
++ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
++ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
++ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
++ * SUCH DAMAGE.
++ *
++ * This file is part of the Contiki operating system.
++ */
++
++/**
++ * \file
++ *         This node is part of the RPL multicast example. It basically
++ *         represents a node that does not join the multicast group
++ *         but still knows how to forward multicast packets and sends a
++ *         multicast message when the button is pressed.
++ *         The example will work with or without any number of these nodes
++ *
++ *         Also, performs some sanity checks for the contiki configuration
++ *         and generates an error if the conf is bad
++ *
++ * \author
++ *         Guillermo Gastón Lorente
++ */
++
++#include "contiki.h"
++#include "contiki-lib.h"
++#include "contiki-net.h"
++#include "net/ipv6/multicast/uip-mcast6.h"
++#include "dev/button-sensor.h"
++
++#include <string.h>
++
++#define DEBUG DEBUG_PRINT
++#include "net/ip/uip-debug.h"
++#include "net/rpl/rpl.h"
++
++#define MAX_PAYLOAD_LEN 120
++#define MCAST_SINK_UDP_PORT 3001 /* Host byte order */
++
++/* Start sending messages START_DELAY secs after we start so that routing can
++ * converge */
++#define START_DELAY 60
++
++static struct uip_udp_conn * mcast_conn;
++static char buf[MAX_PAYLOAD_LEN];
++static uint32_t seq_id;
++
++#if !UIP_CONF_IPV6 || !UIP_CONF_ROUTER || !UIP_CONF_IPV6_MULTICAST || !UIP_CONF_IPV6_RPL
++#error "This example can not work with the current contiki configuration"
++#error "Check the values of: UIP_CONF_IPV6, UIP_CONF_ROUTER, UIP_CONF_IPV6_RPL"
++#endif
++/*---------------------------------------------------------------------------*/
++PROCESS(mcast_internal_seed_process, "Internal-seed Process");
++AUTOSTART_PROCESSES(&mcast_internal_seed_process);
++/*---------------------------------------------------------------------------*/
++static void
++prepare_mcast(void)
++{
++  uip_ipaddr_t ipaddr;
++
++  /*
++   * IPHC will use stateless multicast compression for this destination
++   * (M=1, DAC=0), with 32 inline bits (1E 89 AB CD)
++   */
++  uip_ip6addr(&ipaddr, 0xFF1E,0,0,0,0,0,0x89,0xABCD);
++  mcast_conn = udp_new(&ipaddr, UIP_HTONS(MCAST_SINK_UDP_PORT), NULL);
++}
++/*---------------------------------------------------------------------------*/
++static void
++set_own_address(void)
++{
++  uip_ipaddr_t addr;
++
++  /* First, set our v6 global */
++  uip_ip6addr(&addr, 0xaaaa, 0, 0, 0, 0, 0, 0, 0);
++  uip_ds6_set_addr_iid(&addr, &uip_lladdr);
++  uip_ds6_addr_add(&addr, 0, ADDR_AUTOCONF);
++
++}
++/*---------------------------------------------------------------------------*/
++static void
++multicast_send(void)
++{
++  uint32_t id;
++
++  id = uip_htonl(seq_id);
++  memset(buf, 0, MAX_PAYLOAD_LEN);
++  memcpy(buf, &id, sizeof(seq_id));
++
++  PRINTF("Send to: ");
++  PRINT6ADDR(&mcast_conn->ripaddr);
++  PRINTF(" Remote Port %u,", uip_ntohs(mcast_conn->rport));
++  PRINTF(" (msg=0x%08lx)", (unsigned long)uip_ntohl(*((uint32_t *)buf)));
++  PRINTF(" %lu bytes\n", (unsigned long)sizeof(id));
++
++  seq_id++;
++  uip_udp_packet_send(mcast_conn, buf, sizeof(id));
++}
++/*---------------------------------------------------------------------------*/
++PROCESS_THREAD(mcast_internal_seed_process, ev, data)
++{
++  static struct etimer et;
++
++  PROCESS_BEGIN();
++  SENSORS_ACTIVATE(button_sensor);
++
++  PRINTF("Multicast Engine: '%s'\n", UIP_MCAST6.name);
++
++  NETSTACK_MAC.off(1);
++
++  set_own_address();
++
++  prepare_mcast();
++
++  etimer_set(&et, START_DELAY * CLOCK_SECOND);
++  while(1) {
++    PROCESS_YIELD();
++    if(etimer_expired(&et) && ev == sensors_event && data == &button_sensor) {
++        multicast_send();
++    }
++  }
++
++  PROCESS_END();
++}
++/*---------------------------------------------------------------------------*/
+diff --git a/examples/ipv6/multicast/simulations-bmrf/internal-seed.c b/examples/ipv6/multicast/simulations-bmrf/internal-seed.c
+new file mode 100644
+index 0000000..44e1361
+--- /dev/null
++++ b/examples/ipv6/multicast/simulations-bmrf/internal-seed.c
+@@ -0,0 +1,152 @@
++/*
++ * Copyright (c) 2010, Loughborough University - Computer Science
++ * All rights reserved.
++ *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions
++ * are met:
++ * 1. Redistributions of source code must retain the above copyright
++ *    notice, this list of conditions and the following disclaimer.
++ * 2. Redistributions in binary form must reproduce the above copyright
++ *    notice, this list of conditions and the following disclaimer in the
++ *    documentation and/or other materials provided with the distribution.
++ * 3. Neither the name of the Institute nor the names of its contributors
++ *    may be used to endorse or promote products derived from this software
++ *    without specific prior written permission.
++ *
++ * THIS SOFTWARE IS PROVIDED BY THE INSTITUTE AND CONTRIBUTORS ``AS IS'' AND
++ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
++ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
++ * ARE DISCLAIMED.  IN NO EVENT SHALL THE INSTITUTE OR CONTRIBUTORS BE LIABLE
++ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
++ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
++ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
++ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
++ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
++ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
++ * SUCH DAMAGE.
++ *
++ * This file is part of the Contiki operating system.
++ */
++
++/**
++ * \file
++ *         This node is part of the RPL multicast example. It basically
++ *         represents a node that does not join the multicast group
++ *         but still knows how to forward multicast packets and sends a
++ *         multicast message periodically.
++ *         The example will work with or without any number of these nodes
++ *
++ *         Also, performs some sanity checks for the contiki configuration
++ *         and generates an error if the conf is bad
++ *
++ * \author
++ *         George Oikonomou - <oikonomou@users.sourceforge.net>
++ */
++
++#include "contiki.h"
++#include "contiki-lib.h"
++#include "contiki-net.h"
++#include "net/ipv6/multicast/uip-mcast6.h"
++
++#include <string.h>
++
++#define DEBUG DEBUG_PRINT
++#include "net/ip/uip-debug.h"
++#include "net/rpl/rpl.h"
++
++#define MAX_PAYLOAD_LEN 120
++#define MCAST_SINK_UDP_PORT 3001 /* Host byte order */
++#define SEND_INTERVAL CLOCK_SECOND * 5 /* clock ticks */
++#define ITERATIONS 100 /* messages */
++
++/* Start sending messages START_DELAY secs after we start so that routing can
++ * converge */
++#define START_DELAY 60
++
++static struct uip_udp_conn * mcast_conn;
++static char buf[MAX_PAYLOAD_LEN];
++static uint32_t seq_id;
++
++#if !UIP_CONF_IPV6 || !UIP_CONF_ROUTER || !UIP_CONF_IPV6_MULTICAST || !UIP_CONF_IPV6_RPL
++#error "This example can not work with the current contiki configuration"
++#error "Check the values of: UIP_CONF_IPV6, UIP_CONF_ROUTER, UIP_CONF_IPV6_RPL"
++#endif
++/*---------------------------------------------------------------------------*/
++PROCESS(mcast_internal_seed_process, "Internal-seed Process");
++AUTOSTART_PROCESSES(&mcast_internal_seed_process);
++/*---------------------------------------------------------------------------*/
++static void
++prepare_mcast(void)
++{
++  uip_ipaddr_t ipaddr;
++
++  /*
++   * IPHC will use stateless multicast compression for this destination
++   * (M=1, DAC=0), with 32 inline bits (1E 89 AB CD)
++   */
++  uip_ip6addr(&ipaddr, 0xFF1E,0,0,0,0,0,0x89,0xABCD);
++  mcast_conn = udp_new(&ipaddr, UIP_HTONS(MCAST_SINK_UDP_PORT), NULL);
++}
++/*---------------------------------------------------------------------------*/
++static void
++set_own_address(void)
++{
++  uip_ipaddr_t addr;
++
++  /* First, set our v6 global */
++  uip_ip6addr(&addr, 0xaaaa, 0, 0, 0, 0, 0, 0, 0);
++  uip_ds6_set_addr_iid(&addr, &uip_lladdr);
++  uip_ds6_addr_add(&addr, 0, ADDR_AUTOCONF);
++
++}
++/*---------------------------------------------------------------------------*/
++static void
++multicast_send(void)
++{
++  uint32_t id;
++
++  id = uip_htonl(seq_id);
++  memset(buf, 0, MAX_PAYLOAD_LEN);
++  memcpy(buf, &id, sizeof(seq_id));
++
++  PRINTF("Send to: ");
++  PRINT6ADDR(&mcast_conn->ripaddr);
++  PRINTF(" Remote Port %u,", uip_ntohs(mcast_conn->rport));
++  PRINTF(" (msg=0x%08lx)", (unsigned long)uip_ntohl(*((uint32_t *)buf)));
++  PRINTF(" %lu bytes\n", (unsigned long)sizeof(id));
++
++  seq_id++;
++  uip_udp_packet_send(mcast_conn, buf, sizeof(id));
++}
++/*---------------------------------------------------------------------------*/
++PROCESS_THREAD(mcast_internal_seed_process, ev, data)
++{
++  static struct etimer et;
++
++  PROCESS_BEGIN();
++
++  PRINTF("Multicast Engine: '%s'\n", UIP_MCAST6.name);
++
++  NETSTACK_MAC.off(1);
++
++  set_own_address();
++
++  prepare_mcast();
++
++  etimer_set(&et, START_DELAY * CLOCK_SECOND);
++  while(1) {
++    PROCESS_YIELD();
++    if(etimer_expired(&et)) {
++      if(seq_id == ITERATIONS) {
++        etimer_stop(&et);
++      } else {
++        multicast_send();
++        etimer_set(&et, SEND_INTERVAL);
++      }
++    }
++  }
++
++  PROCESS_END();
++}
++/*---------------------------------------------------------------------------*/
+diff --git a/examples/ipv6/multicast/simulations-bmrf/multicast-bmrf-button.csc b/examples/ipv6/multicast/simulations-bmrf/multicast-bmrf-button.csc
+new file mode 100644
+index 0000000..02fc95c
+--- /dev/null
++++ b/examples/ipv6/multicast/simulations-bmrf/multicast-bmrf-button.csc
+@@ -0,0 +1,376 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<simconf>
++  <project EXPORT="discard">[APPS_DIR]/mrm</project>
++  <project EXPORT="discard">[APPS_DIR]/mspsim</project>
++  <project EXPORT="discard">[APPS_DIR]/avrora</project>
++  <project EXPORT="discard">[APPS_DIR]/serial_socket</project>
++  <project EXPORT="discard">[APPS_DIR]/collect-view</project>
++  <project EXPORT="discard">[APPS_DIR]/powertracker</project>
++  <simulation>
++    <title>Example of a uIPv6 network with multicast support</title>
++    <randomseed>123456</randomseed>
++    <motedelay_us>1000000</motedelay_us>
++    <radiomedium>
++      org.contikios.cooja.radiomediums.UDGM
++      <transmitting_range>50.0</transmitting_range>
++      <interference_range>50.0</interference_range>
++      <success_ratio_tx>1.0</success_ratio_tx>
++      <success_ratio_rx>1.0</success_ratio_rx>
++    </radiomedium>
++    <events>
++      <logoutput>40000</logoutput>
++    </events>
++    <motetype>
++      org.contikios.cooja.mspmote.SkyMoteType
++      <identifier>sky1</identifier>
++      <description>root</description>
++      <source EXPORT="discard">[CONTIKI_DIR]/examples/ipv6/multicast/bmrf/root.c</source>
++      <commands EXPORT="discard">make root.sky TARGET=sky</commands>
++      <firmware EXPORT="copy">[CONTIKI_DIR]/examples/ipv6/multicast/bmrf/root.sky</firmware>
++      <moteinterface>org.contikios.cooja.interfaces.Position</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.RimeAddress</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.IPAddress</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.Mote2MoteRelations</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.MoteAttributes</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspClock</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspMoteID</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyButton</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyFlash</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyCoffeeFilesystem</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.Msp802154Radio</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspSerial</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyLED</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspDebugOutput</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyTemperature</moteinterface>
++    </motetype>
++    <motetype>
++      org.contikios.cooja.mspmote.SkyMoteType
++      <identifier>sky2</identifier>
++      <description>intermediate</description>
++      <source EXPORT="discard">[CONTIKI_DIR]/examples/ipv6/multicast/bmrf/intermediate.c</source>
++      <commands EXPORT="discard">make intermediate.sky TARGET=sky</commands>
++      <firmware EXPORT="copy">[CONTIKI_DIR]/examples/ipv6/multicast/bmrf/intermediate.sky</firmware>
++      <moteinterface>org.contikios.cooja.interfaces.Position</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.RimeAddress</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.IPAddress</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.Mote2MoteRelations</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.MoteAttributes</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspClock</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspMoteID</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyButton</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyFlash</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyCoffeeFilesystem</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.Msp802154Radio</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspSerial</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyLED</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspDebugOutput</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyTemperature</moteinterface>
++    </motetype>
++    <motetype>
++      org.contikios.cooja.mspmote.SkyMoteType
++      <identifier>sky3</identifier>
++      <description>sink</description>
++      <source EXPORT="discard">[CONTIKI_DIR]/examples/ipv6/multicast/bmrf/sink.c</source>
++      <commands EXPORT="discard">make sink.sky TARGET=sky</commands>
++      <firmware EXPORT="copy">[CONTIKI_DIR]/examples/ipv6/multicast/bmrf/sink.sky</firmware>
++      <moteinterface>org.contikios.cooja.interfaces.Position</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.RimeAddress</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.IPAddress</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.Mote2MoteRelations</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.MoteAttributes</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspClock</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspMoteID</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyButton</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyFlash</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyCoffeeFilesystem</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.Msp802154Radio</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspSerial</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyLED</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspDebugOutput</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyTemperature</moteinterface>
++    </motetype>
++    <motetype>
++      org.contikios.cooja.mspmote.SkyMoteType
++      <identifier>sky4</identifier>
++      <description>internal seed</description>
++      <source EXPORT="discard">[CONTIKI_DIR]/examples/ipv6/multicast/bmrf/internal-seed.c</source>
++      <commands EXPORT="discard">make internal-seed.sky TARGET=sky</commands>
++      <firmware EXPORT="copy">[CONTIKI_DIR]/examples/ipv6/multicast/bmrf/internal-seed.sky</firmware>
++      <moteinterface>org.contikios.cooja.interfaces.Position</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.RimeAddress</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.IPAddress</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.Mote2MoteRelations</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.MoteAttributes</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspClock</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspMoteID</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyButton</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyFlash</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyCoffeeFilesystem</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.Msp802154Radio</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspSerial</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyLED</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspDebugOutput</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyTemperature</moteinterface>
++    </motetype>
++    <motetype>
++      org.contikios.cooja.mspmote.SkyMoteType
++      <identifier>sky5</identifier>
++      <description>internal seed button</description>
++      <source EXPORT="discard">[CONTIKI_DIR]/examples/ipv6/multicast/bmrf/internal-seed-button.c</source>
++      <commands EXPORT="discard">make internal-seed-button.sky TARGET=sky</commands>
++      <firmware EXPORT="copy">[CONTIKI_DIR]/examples/ipv6/multicast/bmrf/internal-seed-button.sky</firmware>
++      <moteinterface>org.contikios.cooja.interfaces.Position</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.RimeAddress</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.IPAddress</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.Mote2MoteRelations</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.MoteAttributes</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspClock</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspMoteID</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyButton</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyFlash</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyCoffeeFilesystem</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.Msp802154Radio</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspSerial</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyLED</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspDebugOutput</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyTemperature</moteinterface>
++    </motetype>
++    <mote>
++      <breakpoints />
++      <interface_config>
++        org.contikios.cooja.interfaces.Position
++        <x>-11.374779270898173</x>
++        <y>42.1014262838222</y>
++        <z>0.0</z>
++      </interface_config>
++      <interface_config>
++        org.contikios.cooja.mspmote.interfaces.MspMoteID
++        <id>1</id>
++      </interface_config>
++      <motetype_identifier>sky1</motetype_identifier>
++    </mote>
++    <mote>
++      <breakpoints />
++      <interface_config>
++        org.contikios.cooja.interfaces.Position
++        <x>40.70237155931961</x>
++        <y>16.396742420332068</y>
++        <z>0.0</z>
++      </interface_config>
++      <interface_config>
++        org.contikios.cooja.mspmote.interfaces.MspMoteID
++        <id>2</id>
++      </interface_config>
++      <motetype_identifier>sky2</motetype_identifier>
++    </mote>
++    <mote>
++      <breakpoints />
++      <interface_config>
++        org.contikios.cooja.interfaces.Position
++        <x>64.90397413158443</x>
++        <y>8.987685948272198</y>
++        <z>0.0</z>
++      </interface_config>
++      <interface_config>
++        org.contikios.cooja.mspmote.interfaces.MspMoteID
++        <id>3</id>
++      </interface_config>
++      <interface_config>
++        org.contikios.cooja.mspmote.interfaces.MspSerial
++        <history>reset~;</history>
++      </interface_config>
++      <motetype_identifier>sky3</motetype_identifier>
++    </mote>
++    <mote>
++      <breakpoints />
++      <interface_config>
++        org.contikios.cooja.interfaces.Position
++        <x>110.21206091603426</x>
++        <y>2.877655711097365</y>
++        <z>0.0</z>
++      </interface_config>
++      <interface_config>
++        org.contikios.cooja.mspmote.interfaces.MspMoteID
++        <id>4</id>
++      </interface_config>
++      <motetype_identifier>sky3</motetype_identifier>
++    </mote>
++    <mote>
++      <breakpoints />
++      <interface_config>
++        org.contikios.cooja.interfaces.Position
++        <x>-26.161520836433183</x>
++        <y>8.116006415286686</y>
++        <z>0.0</z>
++      </interface_config>
++      <interface_config>
++        org.contikios.cooja.mspmote.interfaces.MspMoteID
++        <id>5</id>
++      </interface_config>
++      <motetype_identifier>sky3</motetype_identifier>
++    </mote>
++    <mote>
++      <breakpoints />
++      <interface_config>
++        org.contikios.cooja.interfaces.Position
++        <x>-34.57705675553882</x>
++        <y>92.87247531485058</y>
++        <z>0.0</z>
++      </interface_config>
++      <interface_config>
++        org.contikios.cooja.mspmote.interfaces.MspMoteID
++        <id>6</id>
++      </interface_config>
++      <motetype_identifier>sky3</motetype_identifier>
++    </mote>
++    <mote>
++      <breakpoints />
++      <interface_config>
++        org.contikios.cooja.interfaces.Position
++        <x>39.86312587077661</x>
++        <y>59.603125741056246</y>
++        <z>0.0</z>
++      </interface_config>
++      <interface_config>
++        org.contikios.cooja.mspmote.interfaces.MspMoteID
++        <id>7</id>
++      </interface_config>
++      <motetype_identifier>sky2</motetype_identifier>
++    </mote>
++    <mote>
++      <breakpoints />
++      <interface_config>
++        org.contikios.cooja.interfaces.Position
++        <x>1.4345607604759194</x>
++        <y>75.2481773153879</y>
++        <z>0.0</z>
++      </interface_config>
++      <interface_config>
++        org.contikios.cooja.mspmote.interfaces.MspMoteID
++        <id>8</id>
++      </interface_config>
++      <motetype_identifier>sky2</motetype_identifier>
++    </mote>
++    <mote>
++      <breakpoints />
++      <interface_config>
++        org.contikios.cooja.interfaces.Position
++        <x>-3.941048482657294</x>
++        <y>92.99950154187975</y>
++        <z>0.0</z>
++      </interface_config>
++      <interface_config>
++        org.contikios.cooja.mspmote.interfaces.MspMoteID
++        <id>10</id>
++      </interface_config>
++      <motetype_identifier>sky3</motetype_identifier>
++    </mote>
++    <mote>
++      <breakpoints />
++      <interface_config>
++        org.contikios.cooja.interfaces.Position
++        <x>5.5834676345064125</x>
++        <y>86.8754570888481</y>
++        <z>0.0</z>
++      </interface_config>
++      <interface_config>
++        org.contikios.cooja.mspmote.interfaces.MspMoteID
++        <id>11</id>
++      </interface_config>
++      <motetype_identifier>sky3</motetype_identifier>
++    </mote>
++    <mote>
++      <breakpoints />
++      <interface_config>
++        org.contikios.cooja.interfaces.Position
++        <x>47.35082713394279</x>
++        <y>2.9540107136927354</y>
++        <z>0.0</z>
++      </interface_config>
++      <interface_config>
++        org.contikios.cooja.mspmote.interfaces.MspMoteID
++        <id>12</id>
++      </interface_config>
++      <motetype_identifier>sky3</motetype_identifier>
++    </mote>
++    <mote>
++      <breakpoints />
++      <interface_config>
++        org.contikios.cooja.interfaces.Position
++        <x>21.756946402919674</x>
++        <y>26.65199862412975</y>
++        <z>0.0</z>
++      </interface_config>
++      <interface_config>
++        org.contikios.cooja.mspmote.interfaces.MspMoteID
++        <id>13</id>
++      </interface_config>
++      <motetype_identifier>sky2</motetype_identifier>
++    </mote>
++    <mote>
++      <breakpoints />
++      <interface_config>
++        org.contikios.cooja.interfaces.Position
++        <x>82.90548717204591</x>
++        <y>5.743479707068768</y>
++        <z>0.0</z>
++      </interface_config>
++      <interface_config>
++        org.contikios.cooja.mspmote.interfaces.MspMoteID
++        <id>14</id>
++      </interface_config>
++      <motetype_identifier>sky5</motetype_identifier>
++    </mote>
++  </simulation>
++  <plugin>
++    org.contikios.cooja.plugins.SimControl
++    <width>318</width>
++    <z>3</z>
++    <height>192</height>
++    <location_x>691</location_x>
++    <location_y>523</location_y>
++  </plugin>
++  <plugin>
++    org.contikios.cooja.plugins.Visualizer
++    <plugin_config>
++      <skin>org.contikios.cooja.plugins.skins.IDVisualizerSkin</skin>
++      <skin>org.contikios.cooja.plugins.skins.MoteTypeVisualizerSkin</skin>
++      <skin>org.contikios.cooja.plugins.skins.UDGMVisualizerSkin</skin>
++      <skin>org.contikios.cooja.plugins.skins.AddressVisualizerSkin</skin>
++      <skin>org.contikios.cooja.plugins.skins.TrafficVisualizerSkin</skin>
++      <viewport>4.432779149010534 0.0 0.0 4.432779149010534 185.3633653110154 12.498868231299491</viewport>
++    </plugin_config>
++    <width>718</width>
++    <z>0</z>
++    <height>505</height>
++    <location_x>664</location_x>
++    <location_y>3</location_y>
++  </plugin>
++  <plugin>
++    org.contikios.cooja.plugins.LogListener
++    <plugin_config>
++      <filter>^ID:5</filter>
++      <formatted_time />
++      <coloring />
++    </plugin_config>
++    <width>703</width>
++    <z>1</z>
++    <height>845</height>
++    <location_x>-38</location_x>
++    <location_y>2</location_y>
++  </plugin>
++  <plugin>
++    org.contikios.cooja.plugins.MoteInterfaceViewer
++    <mote_arg>9</mote_arg>
++    <plugin_config>
++      <interface>Sky LED</interface>
++      <scrollpos>0,0</scrollpos>
++    </plugin_config>
++    <width>154</width>
++    <z>2</z>
++    <height>155</height>
++    <location_x>1027</location_x>
++    <location_y>522</location_y>
++  </plugin>
++</simconf>
++
+diff --git a/examples/ipv6/multicast/simulations-bmrf/multicast-bmrf.csc b/examples/ipv6/multicast/simulations-bmrf/multicast-bmrf.csc
+new file mode 100644
+index 0000000..c463dbf
+--- /dev/null
++++ b/examples/ipv6/multicast/simulations-bmrf/multicast-bmrf.csc
+@@ -0,0 +1,340 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<simconf>
++  <project EXPORT="discard">[APPS_DIR]/mrm</project>
++  <project EXPORT="discard">[APPS_DIR]/mspsim</project>
++  <project EXPORT="discard">[APPS_DIR]/avrora</project>
++  <project EXPORT="discard">[APPS_DIR]/serial_socket</project>
++  <project EXPORT="discard">[APPS_DIR]/collect-view</project>
++  <project EXPORT="discard">[APPS_DIR]/powertracker</project>
++  <simulation>
++    <title>Example of a uIPv6 network with multicast support</title>
++    <randomseed>123456</randomseed>
++    <motedelay_us>1000000</motedelay_us>
++    <radiomedium>
++      org.contikios.cooja.radiomediums.UDGM
++      <transmitting_range>50.0</transmitting_range>
++      <interference_range>50.0</interference_range>
++      <success_ratio_tx>1.0</success_ratio_tx>
++      <success_ratio_rx>1.0</success_ratio_rx>
++    </radiomedium>
++    <events>
++      <logoutput>40000</logoutput>
++    </events>
++    <motetype>
++      org.contikios.cooja.mspmote.SkyMoteType
++      <identifier>sky1</identifier>
++      <description>root</description>
++      <source EXPORT="discard">[CONTIKI_DIR]/examples/ipv6/multicast/bmrf/root.c</source>
++      <commands EXPORT="discard">make root.sky TARGET=sky</commands>
++      <firmware EXPORT="copy">[CONTIKI_DIR]/examples/ipv6/multicast/bmrf/root.sky</firmware>
++      <moteinterface>org.contikios.cooja.interfaces.Position</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.RimeAddress</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.IPAddress</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.Mote2MoteRelations</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.MoteAttributes</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspClock</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspMoteID</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyButton</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyFlash</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyCoffeeFilesystem</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.Msp802154Radio</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspSerial</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyLED</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspDebugOutput</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyTemperature</moteinterface>
++    </motetype>
++    <motetype>
++      org.contikios.cooja.mspmote.SkyMoteType
++      <identifier>sky2</identifier>
++      <description>intermediate</description>
++      <source EXPORT="discard">[CONTIKI_DIR]/examples/ipv6/multicast/bmrf/intermediate.c</source>
++      <commands EXPORT="discard">make intermediate.sky TARGET=sky</commands>
++      <firmware EXPORT="copy">[CONTIKI_DIR]/examples/ipv6/multicast/bmrf/intermediate.sky</firmware>
++      <moteinterface>org.contikios.cooja.interfaces.Position</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.RimeAddress</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.IPAddress</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.Mote2MoteRelations</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.MoteAttributes</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspClock</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspMoteID</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyButton</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyFlash</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyCoffeeFilesystem</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.Msp802154Radio</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspSerial</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyLED</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspDebugOutput</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyTemperature</moteinterface>
++    </motetype>
++    <motetype>
++      org.contikios.cooja.mspmote.SkyMoteType
++      <identifier>sky3</identifier>
++      <description>sink</description>
++      <source EXPORT="discard">[CONTIKI_DIR]/examples/ipv6/multicast/bmrf/sink.c</source>
++      <commands EXPORT="discard">make sink.sky TARGET=sky</commands>
++      <firmware EXPORT="copy">[CONTIKI_DIR]/examples/ipv6/multicast/bmrf/sink.sky</firmware>
++      <moteinterface>org.contikios.cooja.interfaces.Position</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.RimeAddress</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.IPAddress</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.Mote2MoteRelations</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.MoteAttributes</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspClock</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspMoteID</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyButton</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyFlash</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyCoffeeFilesystem</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.Msp802154Radio</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspSerial</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyLED</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspDebugOutput</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyTemperature</moteinterface>
++    </motetype>
++    <motetype>
++      org.contikios.cooja.mspmote.SkyMoteType
++      <identifier>sky4</identifier>
++      <description>internal seed</description>
++      <source EXPORT="discard">[CONTIKI_DIR]/examples/ipv6/multicast/bmrf/internal-seed.c</source>
++      <commands EXPORT="discard">make internal-seed.sky TARGET=sky</commands>
++      <firmware EXPORT="copy">[CONTIKI_DIR]/examples/ipv6/multicast/bmrf/internal-seed.sky</firmware>
++      <moteinterface>org.contikios.cooja.interfaces.Position</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.RimeAddress</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.IPAddress</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.Mote2MoteRelations</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.MoteAttributes</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspClock</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspMoteID</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyButton</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyFlash</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyCoffeeFilesystem</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.Msp802154Radio</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspSerial</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyLED</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspDebugOutput</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyTemperature</moteinterface>
++    </motetype>
++    <mote>
++      <breakpoints />
++      <interface_config>
++        org.contikios.cooja.interfaces.Position
++        <x>-11.374779270898173</x>
++        <y>42.1014262838222</y>
++        <z>0.0</z>
++      </interface_config>
++      <interface_config>
++        org.contikios.cooja.mspmote.interfaces.MspMoteID
++        <id>1</id>
++      </interface_config>
++      <motetype_identifier>sky1</motetype_identifier>
++    </mote>
++    <mote>
++      <breakpoints />
++      <interface_config>
++        org.contikios.cooja.interfaces.Position
++        <x>40.70237155931961</x>
++        <y>16.396742420332068</y>
++        <z>0.0</z>
++      </interface_config>
++      <interface_config>
++        org.contikios.cooja.mspmote.interfaces.MspMoteID
++        <id>2</id>
++      </interface_config>
++      <motetype_identifier>sky2</motetype_identifier>
++    </mote>
++    <mote>
++      <breakpoints />
++      <interface_config>
++        org.contikios.cooja.interfaces.Position
++        <x>64.90397413158443</x>
++        <y>8.987685948272198</y>
++        <z>0.0</z>
++      </interface_config>
++      <interface_config>
++        org.contikios.cooja.mspmote.interfaces.MspMoteID
++        <id>3</id>
++      </interface_config>
++      <interface_config>
++        org.contikios.cooja.mspmote.interfaces.MspSerial
++        <history>reset~;</history>
++      </interface_config>
++      <motetype_identifier>sky3</motetype_identifier>
++    </mote>
++    <mote>
++      <breakpoints />
++      <interface_config>
++        org.contikios.cooja.interfaces.Position
++        <x>110.21206091603426</x>
++        <y>2.877655711097365</y>
++        <z>0.0</z>
++      </interface_config>
++      <interface_config>
++        org.contikios.cooja.mspmote.interfaces.MspMoteID
++        <id>4</id>
++      </interface_config>
++      <motetype_identifier>sky3</motetype_identifier>
++    </mote>
++    <mote>
++      <breakpoints />
++      <interface_config>
++        org.contikios.cooja.interfaces.Position
++        <x>-26.161520836433183</x>
++        <y>8.116006415286686</y>
++        <z>0.0</z>
++      </interface_config>
++      <interface_config>
++        org.contikios.cooja.mspmote.interfaces.MspMoteID
++        <id>5</id>
++      </interface_config>
++      <motetype_identifier>sky3</motetype_identifier>
++    </mote>
++    <mote>
++      <breakpoints />
++      <interface_config>
++        org.contikios.cooja.interfaces.Position
++        <x>-34.57705675553882</x>
++        <y>92.87247531485058</y>
++        <z>0.0</z>
++      </interface_config>
++      <interface_config>
++        org.contikios.cooja.mspmote.interfaces.MspMoteID
++        <id>6</id>
++      </interface_config>
++      <motetype_identifier>sky3</motetype_identifier>
++    </mote>
++    <mote>
++      <breakpoints />
++      <interface_config>
++        org.contikios.cooja.interfaces.Position
++        <x>39.86312587077661</x>
++        <y>59.603125741056246</y>
++        <z>0.0</z>
++      </interface_config>
++      <interface_config>
++        org.contikios.cooja.mspmote.interfaces.MspMoteID
++        <id>7</id>
++      </interface_config>
++      <motetype_identifier>sky2</motetype_identifier>
++    </mote>
++    <mote>
++      <breakpoints />
++      <interface_config>
++        org.contikios.cooja.interfaces.Position
++        <x>1.4345607604759194</x>
++        <y>75.2481773153879</y>
++        <z>0.0</z>
++      </interface_config>
++      <interface_config>
++        org.contikios.cooja.mspmote.interfaces.MspMoteID
++        <id>8</id>
++      </interface_config>
++      <motetype_identifier>sky2</motetype_identifier>
++    </mote>
++    <mote>
++      <breakpoints />
++      <interface_config>
++        org.contikios.cooja.interfaces.Position
++        <x>83.38467341713303</x>
++        <y>4.3209192415980056</y>
++        <z>0.0</z>
++      </interface_config>
++      <interface_config>
++        org.contikios.cooja.mspmote.interfaces.MspMoteID
++        <id>9</id>
++      </interface_config>
++      <motetype_identifier>sky4</motetype_identifier>
++    </mote>
++    <mote>
++      <breakpoints />
++      <interface_config>
++        org.contikios.cooja.interfaces.Position
++        <x>-3.941048482657294</x>
++        <y>92.99950154187975</y>
++        <z>0.0</z>
++      </interface_config>
++      <interface_config>
++        org.contikios.cooja.mspmote.interfaces.MspMoteID
++        <id>10</id>
++      </interface_config>
++      <motetype_identifier>sky3</motetype_identifier>
++    </mote>
++    <mote>
++      <breakpoints />
++      <interface_config>
++        org.contikios.cooja.interfaces.Position
++        <x>5.5834676345064125</x>
++        <y>86.8754570888481</y>
++        <z>0.0</z>
++      </interface_config>
++      <interface_config>
++        org.contikios.cooja.mspmote.interfaces.MspMoteID
++        <id>11</id>
++      </interface_config>
++      <motetype_identifier>sky3</motetype_identifier>
++    </mote>
++    <mote>
++      <breakpoints />
++      <interface_config>
++        org.contikios.cooja.interfaces.Position
++        <x>47.35082713394279</x>
++        <y>2.9540107136927354</y>
++        <z>0.0</z>
++      </interface_config>
++      <interface_config>
++        org.contikios.cooja.mspmote.interfaces.MspMoteID
++        <id>12</id>
++      </interface_config>
++      <motetype_identifier>sky3</motetype_identifier>
++    </mote>
++    <mote>
++      <breakpoints />
++      <interface_config>
++        org.contikios.cooja.interfaces.Position
++        <x>21.756946402919674</x>
++        <y>26.65199862412975</y>
++        <z>0.0</z>
++      </interface_config>
++      <interface_config>
++        org.contikios.cooja.mspmote.interfaces.MspMoteID
++        <id>13</id>
++      </interface_config>
++      <motetype_identifier>sky2</motetype_identifier>
++    </mote>
++  </simulation>
++  <plugin>
++    org.contikios.cooja.plugins.SimControl
++    <width>318</width>
++    <z>1</z>
++    <height>192</height>
++    <location_x>789</location_x>
++    <location_y>531</location_y>
++  </plugin>
++  <plugin>
++    org.contikios.cooja.plugins.Visualizer
++    <plugin_config>
++      <skin>org.contikios.cooja.plugins.skins.IDVisualizerSkin</skin>
++      <skin>org.contikios.cooja.plugins.skins.MoteTypeVisualizerSkin</skin>
++      <skin>org.contikios.cooja.plugins.skins.UDGMVisualizerSkin</skin>
++      <skin>org.contikios.cooja.plugins.skins.AddressVisualizerSkin</skin>
++      <skin>org.contikios.cooja.plugins.skins.TrafficVisualizerSkin</skin>
++      <viewport>4.432779149010534 0.0 0.0 4.432779149010534 185.3633653110154 12.498868231299491</viewport>
++    </plugin_config>
++    <width>718</width>
++    <z>0</z>
++    <height>505</height>
++    <location_x>657</location_x>
++    <location_y>3</location_y>
++  </plugin>
++  <plugin>
++    org.contikios.cooja.plugins.LogListener
++    <plugin_config>
++      <filter>^ID:3</filter>
++      <formatted_time />
++      <coloring />
++    </plugin_config>
++    <width>836</width>
++    <z>2</z>
++    <height>845</height>
++    <location_x>2</location_x>
++    <location_y>0</location_y>
++  </plugin>
++</simconf>
++
+diff --git a/examples/ipv6/multicast/simulations-bmrf/multicast.csc b/examples/ipv6/multicast/simulations-bmrf/multicast.csc
+new file mode 100644
+index 0000000..b189298
+--- /dev/null
++++ b/examples/ipv6/multicast/simulations-bmrf/multicast.csc
+@@ -0,0 +1,257 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<simconf>
++  <project EXPORT="discard">[APPS_DIR]/mrm</project>
++  <project EXPORT="discard">[APPS_DIR]/mspsim</project>
++  <project EXPORT="discard">[APPS_DIR]/avrora</project>
++  <project EXPORT="discard">[APPS_DIR]/serial_socket</project>
++  <project EXPORT="discard">[APPS_DIR]/collect-view</project>
++  <project EXPORT="discard">[APPS_DIR]/powertracker</project>
++  <simulation>
++    <title>Example of a uIPv6 network with multicast support</title>
++    <randomseed>123456</randomseed>
++    <motedelay_us>1000000</motedelay_us>
++    <radiomedium>
++      org.contikios.cooja.radiomediums.UDGM
++      <transmitting_range>50.0</transmitting_range>
++      <interference_range>50.0</interference_range>
++      <success_ratio_tx>1.0</success_ratio_tx>
++      <success_ratio_rx>1.0</success_ratio_rx>
++    </radiomedium>
++    <events>
++      <logoutput>40000</logoutput>
++    </events>
++    <motetype>
++      org.contikios.cooja.mspmote.SkyMoteType
++      <identifier>sky1</identifier>
++      <description>root</description>
++      <source EXPORT="discard">[CONTIKI_DIR]/examples/ipv6/multicast/bmrf/root.c</source>
++      <commands EXPORT="discard">make root.sky TARGET=sky</commands>
++      <firmware EXPORT="copy">[CONTIKI_DIR]/examples/ipv6/multicast/bmrf/root.sky</firmware>
++      <moteinterface>org.contikios.cooja.interfaces.Position</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.RimeAddress</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.IPAddress</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.Mote2MoteRelations</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.MoteAttributes</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspClock</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspMoteID</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyButton</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyFlash</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyCoffeeFilesystem</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.Msp802154Radio</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspSerial</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyLED</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspDebugOutput</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyTemperature</moteinterface>
++    </motetype>
++    <motetype>
++      org.contikios.cooja.mspmote.SkyMoteType
++      <identifier>sky2</identifier>
++      <description>intermediate</description>
++      <source EXPORT="discard">[CONTIKI_DIR]/examples/ipv6/multicast/bmrf/intermediate.c</source>
++      <commands EXPORT="discard">make intermediate.sky TARGET=sky</commands>
++      <firmware EXPORT="copy">[CONTIKI_DIR]/examples/ipv6/multicast/bmrf/intermediate.sky</firmware>
++      <moteinterface>org.contikios.cooja.interfaces.Position</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.RimeAddress</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.IPAddress</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.Mote2MoteRelations</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.MoteAttributes</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspClock</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspMoteID</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyButton</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyFlash</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyCoffeeFilesystem</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.Msp802154Radio</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspSerial</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyLED</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspDebugOutput</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyTemperature</moteinterface>
++    </motetype>
++    <motetype>
++      org.contikios.cooja.mspmote.SkyMoteType
++      <identifier>sky3</identifier>
++      <description>sink</description>
++      <source EXPORT="discard">[CONTIKI_DIR]/examples/ipv6/multicast/bmrf/sink.c</source>
++      <commands EXPORT="discard">make sink.sky TARGET=sky</commands>
++      <firmware EXPORT="copy">[CONTIKI_DIR]/examples/ipv6/multicast/bmrf/sink.sky</firmware>
++      <moteinterface>org.contikios.cooja.interfaces.Position</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.RimeAddress</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.IPAddress</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.Mote2MoteRelations</moteinterface>
++      <moteinterface>org.contikios.cooja.interfaces.MoteAttributes</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspClock</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspMoteID</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyButton</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyFlash</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyCoffeeFilesystem</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.Msp802154Radio</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspSerial</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyLED</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspDebugOutput</moteinterface>
++      <moteinterface>org.contikios.cooja.mspmote.interfaces.SkyTemperature</moteinterface>
++    </motetype>
++    <mote>
++      <breakpoints />
++      <interface_config>
++        org.contikios.cooja.interfaces.Position
++        <x>5.995813174969022</x>
++        <y>34.43129455447824</y>
++        <z>0.0</z>
++      </interface_config>
++      <interface_config>
++        org.contikios.cooja.mspmote.interfaces.MspMoteID
++        <id>1</id>
++      </interface_config>
++      <motetype_identifier>sky1</motetype_identifier>
++    </mote>
++    <mote>
++      <breakpoints />
++      <interface_config>
++        org.contikios.cooja.interfaces.Position
++        <x>40.70237155931961</x>
++        <y>16.396742420332068</y>
++        <z>0.0</z>
++      </interface_config>
++      <interface_config>
++        org.contikios.cooja.mspmote.interfaces.MspMoteID
++        <id>2</id>
++      </interface_config>
++      <motetype_identifier>sky2</motetype_identifier>
++    </mote>
++    <mote>
++      <breakpoints />
++      <interface_config>
++        org.contikios.cooja.interfaces.Position
++        <x>100.3720728044051</x>
++        <y>70.93197095432518</y>
++        <z>0.0</z>
++      </interface_config>
++      <interface_config>
++        org.contikios.cooja.mspmote.interfaces.MspMoteID
++        <id>3</id>
++      </interface_config>
++      <motetype_identifier>sky3</motetype_identifier>
++    </mote>
++    <mote>
++      <breakpoints />
++      <interface_config>
++        org.contikios.cooja.interfaces.Position
++        <x>81.7376718406712</x>
++        <y>28.854291358797</y>
++        <z>0.0</z>
++      </interface_config>
++      <interface_config>
++        org.contikios.cooja.mspmote.interfaces.MspMoteID
++        <id>4</id>
++      </interface_config>
++      <motetype_identifier>sky3</motetype_identifier>
++    </mote>
++    <mote>
++      <breakpoints />
++      <interface_config>
++        org.contikios.cooja.interfaces.Position
++        <x>-26.161520836433183</x>
++        <y>8.116006415286686</y>
++        <z>0.0</z>
++      </interface_config>
++      <interface_config>
++        org.contikios.cooja.mspmote.interfaces.MspMoteID
++        <id>5</id>
++      </interface_config>
++      <motetype_identifier>sky3</motetype_identifier>
++    </mote>
++    <mote>
++      <breakpoints />
++      <interface_config>
++        org.contikios.cooja.interfaces.Position
++        <x>-34.57705675553882</x>
++        <y>92.87247531485058</y>
++        <z>0.0</z>
++      </interface_config>
++      <interface_config>
++        org.contikios.cooja.mspmote.interfaces.MspMoteID
++        <id>6</id>
++      </interface_config>
++      <motetype_identifier>sky3</motetype_identifier>
++    </mote>
++    <mote>
++      <breakpoints />
++      <interface_config>
++        org.contikios.cooja.interfaces.Position
++        <x>39.86312587077661</x>
++        <y>59.603125741056246</y>
++        <z>0.0</z>
++      </interface_config>
++      <interface_config>
++        org.contikios.cooja.mspmote.interfaces.MspMoteID
++        <id>7</id>
++      </interface_config>
++      <motetype_identifier>sky2</motetype_identifier>
++    </mote>
++    <mote>
++      <breakpoints />
++      <interface_config>
++        org.contikios.cooja.interfaces.Position
++        <x>1.4345607604759194</x>
++        <y>75.2481773153879</y>
++        <z>0.0</z>
++      </interface_config>
++      <interface_config>
++        org.contikios.cooja.mspmote.interfaces.MspMoteID
++        <id>8</id>
++      </interface_config>
++      <motetype_identifier>sky2</motetype_identifier>
++    </mote>
++  </simulation>
++  <plugin>
++    org.contikios.cooja.plugins.SimControl
++    <width>318</width>
++    <z>0</z>
++    <height>192</height>
++    <location_x>0</location_x>
++    <location_y>0</location_y>
++  </plugin>
++  <plugin>
++    org.contikios.cooja.plugins.Visualizer
++    <plugin_config>
++      <skin>org.contikios.cooja.plugins.skins.IDVisualizerSkin</skin>
++      <skin>org.contikios.cooja.plugins.skins.MoteTypeVisualizerSkin</skin>
++      <skin>org.contikios.cooja.plugins.skins.UDGMVisualizerSkin</skin>
++      <skin>org.contikios.cooja.plugins.skins.AddressVisualizerSkin</skin>
++      <viewport>3.914959956760176 0.0 0.0 3.914959956760176 300.2075734071477 -15.682931033747009</viewport>
++    </plugin_config>
++    <width>869</width>
++    <z>3</z>
++    <height>441</height>
++    <location_x>320</location_x>
++    <location_y>3</location_y>
++  </plugin>
++  <plugin>
++    org.contikios.cooja.plugins.LogListener
++    <plugin_config>
++      <filter />
++      <formatted_time />
++      <coloring />
++    </plugin_config>
++    <width>1281</width>
++    <z>2</z>
++    <height>213</height>
++    <location_x>-1</location_x>
++    <location_y>714</location_y>
++  </plugin>
++  <plugin>
++    org.contikios.cooja.plugins.RadioLogger
++    <plugin_config>
++      <split>117</split>
++      <formatted_time />
++      <showdups>false</showdups>
++      <hidenodests>false</hidenodests>
++      <analyzers name="6lowpan-pcap" />
++    </plugin_config>
++    <width>1280</width>
++    <z>1</z>
++    <height>268</height>
++    <location_x>0</location_x>
++    <location_y>445</location_y>
++  </plugin>
++</simconf>
++
+diff --git a/examples/ipv6/multicast/simulations-bmrf/project-conf.h b/examples/ipv6/multicast/simulations-bmrf/project-conf.h
+index aa6d850..d45698c 100644
+--- a/examples/ipv6/multicast/simulations-bmrf/project-conf.h
++++ b/examples/ipv6/multicast/simulations-bmrf/project-conf.h
+@@ -31,10 +31,11 @@
+ 
+ /**
+  * \file
+- *         Project specific configuration defines for the RPl multicast simulations
++ *         Project specific configuration defines for the RPl multicast
++ *         example.
+  *
+  * \author
+- *         Guillermo Gastón
++ *         George Oikonomou - <oikonomou@users.sourceforge.net>
+  */
+ 
+ #ifndef PROJECT_CONF_H_
+@@ -45,7 +46,7 @@
+ /* Change this to switch engines. Engine codes in uip-mcast6-engines.h */
+ #define UIP_MCAST6_CONF_ENGINE UIP_MCAST6_ENGINE_BMRF
+ #define BMRF_CONF_MODE BMRF_MIXED_MODE
+-#define BMRF_CONF_BROADCAST_THRESHOLD   1
++#define BMRF_CONF_BROADCAST_THRESHOLD   2
+ 
+ /* For Imin: Use 16 over NullRDC, 64 over Contiki MAC */
+ #define ROLL_TM_CONF_IMIN_1         64
+@@ -57,8 +58,6 @@
+ #define UIP_CONF_ND6_SEND_RA         0
+ #define UIP_CONF_ROUTER              1
+ #define UIP_MCAST6_ROUTE_CONF_ROUTES 8
+-#define CSMA_CONF_MAX_NEIGHBOR_QUEUES UIP_MCAST6_ROUTE_CONF_ROUTES
+-//#define QUEUEBUF_CONF_NUM 10
+ 
+ #undef UIP_CONF_TCP
+ #define UIP_CONF_TCP 0
+@@ -69,12 +68,12 @@
+ #define UIP_CONF_DS6_NBR_NBU        10
+ #define UIP_CONF_DS6_ROUTE_NBU      10
+ 
+-/* Enable simulation stats */
+-#define SIMSTATS_CONF_ENABLED 1
+-
+-/* Simulation parameters */
+-#define MCAST_CONF_MESSAGES 100
+-#define MCAST_CONF_SEND_INTERVAL 3
+-#define MCAST_CONF_START_DELAY 60
+-
+ #endif /* PROJECT_CONF_H_ */
++
++//
++// #define UIP_MCAST6_ENGINE_NONE        0 /* Selecting this disables mcast */
++// #define UIP_MCAST6_ENGINE_SMRF        1
++// #define UIP_MCAST6_ENGINE_ROLL_TM     2
++// #define UIP_MCAST6_ENGINE_SeRI        3
++// #define UIP_MCAST6_ENGINE_BMRF        4
++// #define UIP_MCAST6_ENGINE_ESMRF       5 /**< The ESMRF engine */
+\ No newline at end of file
+-- 
+1.9.1
+

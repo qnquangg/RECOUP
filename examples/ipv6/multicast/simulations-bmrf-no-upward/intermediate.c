@@ -33,8 +33,7 @@
  * \file
  *         This node is part of the RPL multicast example. It basically
  *         represents a node that does not join the multicast group
- *         but still knows how to forward multicast packets and sends a
- *         multicast message periodically.
+ *         but still knows how to forward multicast packets
  *         The example will work with or without any number of these nodes
  *
  *         Also, performs some sanity checks for the contiki configuration
@@ -45,123 +44,51 @@
  */
 
 #include "contiki.h"
-#include "contiki-lib.h"
 #include "contiki-net.h"
 #include "net/ipv6/multicast/uip-mcast6.h"
-
-#include <string.h>
+#include "simstats.h"
 
 #define DEBUG DEBUG_PRINT
 #include "net/ip/uip-debug.h"
-#include "net/rpl/rpl.h"
-
-#define MAX_PAYLOAD_LEN 120
-#define MCAST_SINK_UDP_PORT 3001 /* Host byte order */
-
-#ifdef MCAST_CONF_SEND_INTERVAL
-#define SEND_INTERVAL MCAST_CONF_SEND_INTERVAL * CLOCK_SECOND /* clock ticks */
-#else
-#define SEND_INTERVAL CLOCK_SECOND
-#endif
-
-#if (SENDER_IS == SINK)
-#ifdef MCAST_CONF_MESSAGES
-#define ITERATIONS MCAST_CONF_MESSAGES /* messages */
-#endif
-#else
-#define ITERATIONS 0
-#endif
-
-/* Start sending messages START_DELAY secs after we start so that routing can
- * converge */
-#ifdef MCAST_CONF_START_DELAY
-#define START_DELAY MCAST_CONF_START_DELAY
-#else
-#define START_DELAY 60
-#endif
-
-static struct uip_udp_conn * mcast_conn;
-static char buf[MAX_PAYLOAD_LEN];
-static uint32_t seq_id;
 
 #if !UIP_CONF_IPV6 || !UIP_CONF_ROUTER || !UIP_CONF_IPV6_MULTICAST || !UIP_CONF_IPV6_RPL
 #error "This example can not work with the current contiki configuration"
 #error "Check the values of: UIP_CONF_IPV6, UIP_CONF_ROUTER, UIP_CONF_IPV6_RPL"
 #endif
+
+
+#if defined(MCAST_CONF_SEND_INTERVAL) && defined(MCAST_CONF_MESSAGES) && defined(MCAST_CONF_START_DELAY)
+#define WAIT_FOR_END ((MCAST_CONF_SEND_INTERVAL * MCAST_CONF_MESSAGES) + MCAST_CONF_START_DELAY + 63)
+#else
+#define WAIT_FOR_END 160 + 50
+#endif
+
 /*---------------------------------------------------------------------------*/
-PROCESS(mcast_internal_seed_process, "Internal-seed Process");
-AUTOSTART_PROCESSES(&mcast_internal_seed_process);
+PROCESS(mcast_intermediate_process, "Intermediate Process");
+AUTOSTART_PROCESSES(&mcast_intermediate_process);
 /*---------------------------------------------------------------------------*/
-static void
-prepare_mcast(void)
-{
-  uip_ipaddr_t ipaddr;
-
-  /*
-   * IPHC will use stateless multicast compression for this destination
-   * (M=1, DAC=0), with 32 inline bits (1E 89 AB CD)
-   */
-  uip_ip6addr(&ipaddr, 0xFF1E,0,0,0,0,0,0x89,0xABCD);
-  mcast_conn = udp_new(&ipaddr, UIP_HTONS(MCAST_SINK_UDP_PORT), NULL);
-}
-/*---------------------------------------------------------------------------*/
-static void
-set_own_address(void)
-{
-  uip_ipaddr_t addr;
-
-  /* First, set our v6 global */
-  uip_ip6addr(&addr, 0xaaaa, 0, 0, 0, 0, 0, 0, 0);
-  uip_ds6_set_addr_iid(&addr, &uip_lladdr);
-  uip_ds6_addr_add(&addr, 0, ADDR_AUTOCONF);
-
-}
-/*---------------------------------------------------------------------------*/
-static void
-multicast_send(void)
-{
-  uint32_t id;
-
-  id = uip_htonl(seq_id);
-  memset(buf, 0, MAX_PAYLOAD_LEN);
-  memcpy(buf, &id, sizeof(seq_id));
-
-  PRINTF("Send to: ");
-  PRINT6ADDR(&mcast_conn->ripaddr);
-  PRINTF(" Remote Port %u,", uip_ntohs(mcast_conn->rport));
-  PRINTF(" (msg=0x%08lx)", (unsigned long)uip_ntohl(*((uint32_t *)buf)));
-  PRINTF(" %lu bytes\n", (unsigned long)sizeof(id));
-
-  PRINTF("Out;%lu\n", seq_id);  // For script parsing purposes.
-
-  seq_id++;
-  uip_udp_packet_send(mcast_conn, buf, sizeof(id));
-}
-/*---------------------------------------------------------------------------*/
-PROCESS_THREAD(mcast_internal_seed_process, ev, data)
+PROCESS_THREAD(mcast_intermediate_process, ev, data)
 {
   static struct etimer et;
 
   PROCESS_BEGIN();
 
-  PRINTF("Multicast Engine: '%s'\n", UIP_MCAST6.name);
+  etimer_set(&et, WAIT_FOR_END * CLOCK_SECOND);
+  printf("WAIT_FOR_END: %u\n", WAIT_FOR_END);
 
-  NETSTACK_MAC.off(1);
 
-  set_own_address();
-
-  prepare_mcast();
-
-  etimer_set(&et, START_DELAY * CLOCK_SECOND);
   while(1) {
     PROCESS_YIELD();
     if(etimer_expired(&et)) {
-      if(seq_id == ITERATIONS) {
-        etimer_stop(&et);
-      } else {
-        multicast_send();
-        etimer_set(&et, SEND_INTERVAL);
-      }
+      PRINTF("n; %lu; %lu; %lu; %lu; %lu; %lu\n",
+        SIMSTATS_GET(lltx),
+        SIMSTATS_GET(pkttx),
+        energest_type_time(ENERGEST_TYPE_LISTEN),
+        energest_type_time(ENERGEST_TYPE_TRANSMIT),
+        energest_type_time(ENERGEST_TYPE_LPM),
+        energest_type_time(ENERGEST_TYPE_CPU));
+      etimer_stop(&et);
+      break;
     }
   }
 

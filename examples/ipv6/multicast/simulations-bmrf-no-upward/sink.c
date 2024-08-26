@@ -55,7 +55,7 @@
 
 static struct uip_udp_conn *sink_conn;
 static uint16_t count;
-static uint8_t received[MCAST_CONF_MESSAGES];
+static uint8_t received[100];
 static uint8_t duplicates;
 
 #define UIP_IP_BUF   ((struct uip_ip_hdr *)&uip_buf[UIP_LLH_LEN])
@@ -91,9 +91,9 @@ AUTOSTART_PROCESSES(&mcast_sink_process);
 static void
 tcpip_handler(void)
 {
-  static uint32_t packet_number;
+  static uint8_t packet_number;
   if(uip_newdata()) {
-    packet_number = uip_ntohl((unsigned long) *((uint32_t *)(uip_appdata)));
+    packet_number = (uint8_t)uip_ntohl((unsigned long) *((uint32_t *)(uip_appdata)));
     if (received[packet_number] == 0) {
       count++;
       received[packet_number] = 1;
@@ -147,7 +147,6 @@ PROCESS_THREAD(mcast_sink_process, ev, data)
   etimer_set(&et_init, (START_DELAY - SUBSCRIBING_TIME) * CLOCK_SECOND);
 
   PRINTF("Multicast Engine: '%s'\n", UIP_MCAST6.name);
-  PRINTF("Wait for end: %d\n", WAIT_FOR_END);
 
   count = 0;
 
@@ -157,7 +156,6 @@ PROCESS_THREAD(mcast_sink_process, ev, data)
       tcpip_handler();
       //etimer_restart(&et);
     } else if(etimer_expired(&et)) {
-      // end
       PRINTF("%u; %lu; %lu; %lu; %lu; %lu; %lu\n",
         count,
         SIMSTATS_GET(lltx),
@@ -166,9 +164,8 @@ PROCESS_THREAD(mcast_sink_process, ev, data)
         energest_type_time(ENERGEST_TYPE_TRANSMIT),
         energest_type_time(ENERGEST_TYPE_LPM),
         energest_type_time(ENERGEST_TYPE_CPU));
-      // PRINTF("Duplicates; %u\n",
-      //   duplicates);
-      PROCESS_EXIT();
+      PRINTF("Duplicates; %u\n",
+        duplicates);
     } else if(etimer_expired(&et_init)) {
       if(join_mcast_group() == NULL) {
         PRINTF("Failed to join multicast group\n");
