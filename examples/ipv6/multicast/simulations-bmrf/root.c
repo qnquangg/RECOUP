@@ -43,6 +43,8 @@
 #include "contiki-lib.h"
 #include "contiki-net.h"
 #include "net/ipv6/multicast/uip-mcast6.h"
+#include "net/ipv6/multicast/uip-mcast6-route.h"
+#include "net/ipv6/uip-ds6.h"
 
 #include <string.h>
 
@@ -51,6 +53,7 @@
 #include "net/rpl/rpl.h"
 
 #include "simstats.h"
+#include "lib/list.h"
 
 #define MAX_PAYLOAD_LEN 120
 #define MCAST_SINK_UDP_PORT 3001 /* Host byte order */
@@ -90,6 +93,210 @@ static uint32_t seq_id;
 PROCESS(rpl_root_process, "RPL ROOT, Multicast Sender");
 AUTOSTART_PROCESSES(&rpl_root_process);
 /*---------------------------------------------------------------------------*/
+
+/*
+ID:1 
+
+Multicast Routing Table:
+Group Address: ff1e::89:abcd
+Lifetime: 65532 seconds
+RPL DAG Pointer: 0x2c0a
+Subscribed Child: 00:12:74:09:00:09:09:09
+----------------------------
+Group Address: ff1e::89:abcd
+Lifetime: 65508 seconds
+RPL DAG Pointer: 0x2c0a
+Subscribed Child: 00:12:74:0d:00:0d:0d:0d
+----------------------------
+Group Address: ff1e::89:abcd
+Lifetime: 65526 seconds
+RPL DAG Pointer: 0x2c0a
+Subscribed Child: 00:12:74:15:00:15:15:15
+----------------------------
+Group Address: ff1e::89:abcd
+Lifetime: 65502 seconds
+RPL DAG Pointer: 0x2c0a
+Subscribed Child: 00:12:74:0f:00:0f:0f:0f
+----------------------------
+Group Address: ff1e::89:abcd
+Lifetime: 65510 seconds
+RPL DAG Pointer: 0x2c0a
+Subscribed Child: 00:12:74:04:00:04:04:04
+----------------------------
+End of Multicast Routing Table
+*/
+void print_mcast6_routes() {
+  uip_mcast6_route_t *route;
+  uip_ipaddr_t *group_addr;
+  uint32_t lifetime;
+  void *dag;
+#if UIP_MCAST6_CONF_ENGINE == UIP_MCAST6_ENGINE_SeRI || UIP_MCAST6_CONF_ENGINE == UIP_MCAST6_ENGINE_BMRF
+  uip_lladdr_t *subscribed_child;
+#endif
+    // Iterate through the multicast routing list
+  for (route = uip_mcast6_route_list_head(); route != NULL; route = route->next) {
+    group_addr = &route->group;
+    lifetime = route->lifetime;
+    dag = route->dag;
+    // Print multicast group address
+    printf("Group Address: ");
+    uip_debug_ipaddr_print(group_addr);
+    printf("\n");
+    // Print the route's lifetime
+    printf("Lifetime: %u seconds\n", lifetime);
+    // Print the RPL DAG pointer (or its details if needed)
+    printf("RPL DAG Pointer: %p\n", dag);
+    // Print subscribed child address
+#if UIP_MCAST6_CONF_ENGINE == UIP_MCAST6_ENGINE_SeRI || UIP_MCAST6_CONF_ENGINE == UIP_MCAST6_ENGINE_BMRF
+    subscribed_child = &route->subscribed_child;
+    printf("Subscribed Child: ");
+    uip_debug_lladdr_print(subscribed_child); // Print link-layer address
+    printf("\n");
+    printf("----------------------------\n");
+#endif
+  }
+}
+
+/*
+Unicast Routing Table:
+Destination: aaaa::212:740e:e:e0e
+Next Hop: fe80::212:7409:9:909
+Lifetime: 65248 seconds
+Prefix Length: 128
+----------------------------
+Destination: aaaa::212:7408:8:808
+Next Hop: fe80::212:7409:9:909
+Lifetime: 65249 seconds
+Prefix Length: 128
+----------------------------
+Destination: aaaa::212:7413:13:1313
+Next Hop: fe80::212:740d:d:d0d
+Lifetime: 65249 seconds
+Prefix Length: 128
+----------------------------
+Destination: aaaa::212:7403:3:303
+Next Hop: fe80::212:7409:9:909
+Lifetime: 65249 seconds
+Prefix Length: 128
+----------------------------
+Destination: aaaa::212:7415:15:1515
+Next Hop: fe80::212:7415:15:1515
+Lifetime: 65250 seconds
+Prefix Length: 128
+----------------------------
+Destination: aaaa::212:740f:f:f0f
+Next Hop: fe80::212:740f:f:f0f
+Lifetime: 65250 seconds
+Prefix Length: 128
+----------------------------
+Destination: aaaa::212:7404:4:404
+Next Hop: fe80::212:7404:4:404
+Lifetime: 65251 seconds
+Prefix Length: 128
+----------------------------
+Destination: aaaa::212:740d:d:d0d
+Next Hop: fe80::212:740d:d:d0d
+Lifetime: 65251 seconds
+Prefix Length: 128
+----------------------------
+Destination: aaaa::212:7402:2:202
+Next Hop: fe80::212:740d:d:d0d
+Lifetime: 65252 seconds
+Prefix Length: 128
+----------------------------
+Destination: aaaa::212:7405:5:505
+Next Hop: fe80::212:740d:d:d0d
+Lifetime: 65252 seconds
+Prefix Length: 128
+----------------------------
+Destination: aaaa::212:7410:10:1010
+Next Hop: fe80::212:7404:4:404
+Lifetime: 65253 seconds
+Prefix Length: 128
+----------------------------
+Destination: aaaa::212:7411:11:1111
+Next Hop: fe80::212:7404:4:404
+Lifetime: 65254 seconds
+Prefix Length: 128
+----------------------------
+Destination: aaaa::212:7407:7:707
+Next Hop: fe80::212:7415:15:1515
+Lifetime: 65255 seconds
+Prefix Length: 128
+----------------------------
+Destination: aaaa::212:740c:c:c0c
+Next Hop: fe80::212:7404:4:404
+Lifetime: 65255 seconds
+Prefix Length: 128
+----------------------------
+Destination: aaaa::212:7414:14:1414
+Next Hop: fe80::212:740d:d:d0d
+Lifetime: 65256 seconds
+Prefix Length: 128
+----------------------------
+Destination: aaaa::212:740a:a:a0a
+Next Hop: fe80::212:7404:4:404
+Lifetime: 65257 seconds
+Prefix Length: 128
+----------------------------
+Destination: aaaa::212:740b:b:b0b
+Next Hop: fe80::212:7404:4:404
+Lifetime: 65258 seconds
+Prefix Length: 128
+----------------------------
+Destination: aaaa::212:7412:12:1212
+Next Hop: fe80::212:7404:4:404
+Lifetime: 65258 seconds
+Prefix Length: 128
+----------------------------
+Destination: aaaa::212:7406:6:606
+Next Hop: fe80::212:7415:15:1515
+Lifetime: 65274 seconds
+Prefix Length: 128
+----------------------------
+Destination: aaaa::212:7409:9:909
+Next Hop: fe80::212:7409:9:909
+Lifetime: 65280 seconds
+Prefix Length: 128
+----------------------------
+End of Unicast Routing Table
+*/
+void print_ucast6_table() {
+  uip_ds6_route_t *r;
+  uip_ipaddr_t *ipaddr;
+  uip_ipaddr_t *nexthop;
+  uint16_t lifetime;
+
+  // Print the Unicast Routing Table
+  for (r = uip_ds6_route_head(); r != NULL; r = uip_ds6_route_next(r)) {
+    ipaddr = &r->ipaddr;
+    nexthop = uip_ds6_route_nexthop(r);
+    lifetime = r->state.lifetime;
+    printf("Destination: ");
+    uip_debug_ipaddr_print(ipaddr);
+    printf("\n");
+    printf("Next Hop: ");
+    uip_debug_ipaddr_print(nexthop);
+    printf("\n");
+    printf("Lifetime: %u seconds\n", lifetime);
+    printf("Prefix Length: %u\n", r->length);
+    printf("----------------------------\n");
+  }
+}
+
+void print_routing_tables() {
+  // Print the Unicast Routing Table
+  printf("Unicast Routing Table:\n");
+  print_ucast6_table();
+  printf("End of Unicast Routing Table\n");
+
+  printf("----------------------------\n");
+  // Print the Multicast Routing Table
+  printf("Multicast Routing Table:\n");
+  print_mcast6_routes();
+  printf("End of Multicast Routing Table\n");
+}
+
 static void
 multicast_send(void)
 {
@@ -190,6 +397,7 @@ PROCESS_THREAD(rpl_root_process, ev, data)
           energest_type_time(ENERGEST_TYPE_CPU));
 #endif
       } else {
+        print_routing_tables(); break;
         multicast_send();
         etimer_set(&et, SEND_INTERVAL);
       }
