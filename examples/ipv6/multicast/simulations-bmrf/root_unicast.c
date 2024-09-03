@@ -58,6 +58,13 @@
 #define MAX_PAYLOAD_LEN 120
 #define MCAST_SINK_UDP_PORT 3001 /* Host byte order */
 
+#include "simple-udp.h"
+// #include "servreg-hack.h"
+#define UNICAST_UDP_PORT 1234
+#define SERVICE_ID 190
+static struct simple_udp_connection unicast_connection;
+
+
 #ifdef MCAST_CONF_SEND_INTERVAL
 #define SEND_INTERVAL MCAST_CONF_SEND_INTERVAL * CLOCK_SECOND /* clock ticks */
 #else
@@ -90,41 +97,9 @@ static uint32_t seq_id;
 #error "Check the values of: UIP_CONF_IPV6, UIP_CONF_ROUTER, UIP_CONF_IPV6_RPL"
 #endif
 /*---------------------------------------------------------------------------*/
-PROCESS(rpl_root_process, "RPL ROOT, Multicast Sender");
+PROCESS(rpl_root_process, "RPL ROOT, Unicast Sender");
 AUTOSTART_PROCESSES(&rpl_root_process);
 /*---------------------------------------------------------------------------*/
-
-/*
-ID:1 
-
-Multicast Routing Table:
-Group Address: ff1e::89:abcd
-Lifetime: 65532 seconds
-RPL DAG Pointer: 0x2c0a
-Subscribed Child: 00:12:74:09:00:09:09:09
-----------------------------
-Group Address: ff1e::89:abcd
-Lifetime: 65508 seconds
-RPL DAG Pointer: 0x2c0a
-Subscribed Child: 00:12:74:0d:00:0d:0d:0d
-----------------------------
-Group Address: ff1e::89:abcd
-Lifetime: 65526 seconds
-RPL DAG Pointer: 0x2c0a
-Subscribed Child: 00:12:74:15:00:15:15:15
-----------------------------
-Group Address: ff1e::89:abcd
-Lifetime: 65502 seconds
-RPL DAG Pointer: 0x2c0a
-Subscribed Child: 00:12:74:0f:00:0f:0f:0f
-----------------------------
-Group Address: ff1e::89:abcd
-Lifetime: 65510 seconds
-RPL DAG Pointer: 0x2c0a
-Subscribed Child: 00:12:74:04:00:04:04:04
-----------------------------
-End of Multicast Routing Table
-*/
 void print_mcast6_routes() {
   uip_mcast6_route_t *route;
   uip_ipaddr_t *group_addr;
@@ -157,118 +132,16 @@ void print_mcast6_routes() {
   }
 }
 
-/*
-Unicast Routing Table:
-Destination: aaaa::212:740e:e:e0e
-Next Hop: fe80::212:7409:9:909
-Lifetime: 65248 seconds
-Prefix Length: 128
-----------------------------
-Destination: aaaa::212:7408:8:808
-Next Hop: fe80::212:7409:9:909
-Lifetime: 65249 seconds
-Prefix Length: 128
-----------------------------
-Destination: aaaa::212:7413:13:1313
-Next Hop: fe80::212:740d:d:d0d
-Lifetime: 65249 seconds
-Prefix Length: 128
-----------------------------
-Destination: aaaa::212:7403:3:303
-Next Hop: fe80::212:7409:9:909
-Lifetime: 65249 seconds
-Prefix Length: 128
-----------------------------
-Destination: aaaa::212:7415:15:1515
-Next Hop: fe80::212:7415:15:1515
-Lifetime: 65250 seconds
-Prefix Length: 128
-----------------------------
-Destination: aaaa::212:740f:f:f0f
-Next Hop: fe80::212:740f:f:f0f
-Lifetime: 65250 seconds
-Prefix Length: 128
-----------------------------
-Destination: aaaa::212:7404:4:404
-Next Hop: fe80::212:7404:4:404
-Lifetime: 65251 seconds
-Prefix Length: 128
-----------------------------
-Destination: aaaa::212:740d:d:d0d
-Next Hop: fe80::212:740d:d:d0d
-Lifetime: 65251 seconds
-Prefix Length: 128
-----------------------------
-Destination: aaaa::212:7402:2:202
-Next Hop: fe80::212:740d:d:d0d
-Lifetime: 65252 seconds
-Prefix Length: 128
-----------------------------
-Destination: aaaa::212:7405:5:505
-Next Hop: fe80::212:740d:d:d0d
-Lifetime: 65252 seconds
-Prefix Length: 128
-----------------------------
-Destination: aaaa::212:7410:10:1010
-Next Hop: fe80::212:7404:4:404
-Lifetime: 65253 seconds
-Prefix Length: 128
-----------------------------
-Destination: aaaa::212:7411:11:1111
-Next Hop: fe80::212:7404:4:404
-Lifetime: 65254 seconds
-Prefix Length: 128
-----------------------------
-Destination: aaaa::212:7407:7:707
-Next Hop: fe80::212:7415:15:1515
-Lifetime: 65255 seconds
-Prefix Length: 128
-----------------------------
-Destination: aaaa::212:740c:c:c0c
-Next Hop: fe80::212:7404:4:404
-Lifetime: 65255 seconds
-Prefix Length: 128
-----------------------------
-Destination: aaaa::212:7414:14:1414
-Next Hop: fe80::212:740d:d:d0d
-Lifetime: 65256 seconds
-Prefix Length: 128
-----------------------------
-Destination: aaaa::212:740a:a:a0a
-Next Hop: fe80::212:7404:4:404
-Lifetime: 65257 seconds
-Prefix Length: 128
-----------------------------
-Destination: aaaa::212:740b:b:b0b
-Next Hop: fe80::212:7404:4:404
-Lifetime: 65258 seconds
-Prefix Length: 128
-----------------------------
-Destination: aaaa::212:7412:12:1212
-Next Hop: fe80::212:7404:4:404
-Lifetime: 65258 seconds
-Prefix Length: 128
-----------------------------
-Destination: aaaa::212:7406:6:606
-Next Hop: fe80::212:7415:15:1515
-Lifetime: 65274 seconds
-Prefix Length: 128
-----------------------------
-Destination: aaaa::212:7409:9:909
-Next Hop: fe80::212:7409:9:909
-Lifetime: 65280 seconds
-Prefix Length: 128
-----------------------------
-End of Unicast Routing Table
-*/
 void print_ucast6_table() {
   uip_ds6_route_t *r;
   uip_ipaddr_t *ipaddr;
   uip_ipaddr_t *nexthop;
   uint16_t lifetime;
+  int all_children = 0;
 
   // Print the Unicast Routing Table
   for (r = uip_ds6_route_head(); r != NULL; r = uip_ds6_route_next(r)) {
+    all_children++;
     ipaddr = &r->ipaddr;
     nexthop = uip_ds6_route_nexthop(r);
     lifetime = r->state.lifetime;
@@ -282,6 +155,7 @@ void print_ucast6_table() {
     printf("Prefix Length: %u\n", r->length);
     printf("----------------------------\n");
   }
+  printf("all_children: %d\n", all_children);
 }
 
 void print_routing_tables() {
@@ -296,7 +170,27 @@ void print_routing_tables() {
   print_mcast6_routes();
   printf("End of Multicast Routing Table\n");
 }
+/*---------------------------------------------------------------------------*/
+void send_unicast_to_children() {
+  uip_ipaddr_t *child_addr;
+  uip_ds6_route_t *r;
+  // Traverse the routing table to get all child nodes
+  for (r = uip_ds6_route_head(); r != NULL; r = uip_ds6_route_next(r)) {
+    child_addr = &r->ipaddr;
+    if (child_addr != NULL) {
+      static unsigned int message_number;
+      char buf[20];
+      printf("Sending unicast to ");
+      uip_debug_ipaddr_print(child_addr);
+      printf("\n");
+      sprintf(buf, "Message %d", message_number);
+      message_number++;
+      simple_udp_sendto(&unicast_connection, buf, strlen(buf) + 1, child_addr);
+    }
+  }
+}
 
+/*---------------------------------------------------------------------------*/
 static void
 multicast_send(void)
 {
@@ -313,7 +207,6 @@ multicast_send(void)
   PRINTF(" %lu bytes\n", (unsigned long)sizeof(id));
 
   PRINTF("Out;%lu\n", seq_id);
-
   seq_id++;
   uip_udp_packet_send(mcast_conn, buf, sizeof(id));
 }
@@ -370,35 +263,28 @@ set_own_addresses(void)
 PROCESS_THREAD(rpl_root_process, ev, data)
 {
   static struct etimer et;
+  static struct etimer periodic_timer;
+  static struct etimer send_timer;
 
   PROCESS_BEGIN();
-
-  PRINTF("Multicast Engine: '%s'\n", UIP_MCAST6.name);
 
   NETSTACK_MAC.off(1);
 
   set_own_addresses();
-
-  prepare_mcast();
+  
+  simple_udp_register(&unicast_connection, UNICAST_UDP_PORT,
+                      NULL, UNICAST_UDP_PORT, NULL);
 
   etimer_set(&et, START_DELAY * CLOCK_SECOND);
+
   while(1) {
     PROCESS_YIELD();
     if(etimer_expired(&et)) {
       if(seq_id == ITERATIONS) {
-        etimer_stop(&et);
-#if (SENDER_IS == ROOT)
-        PRINTF("n; %lu; %lu; %lu; %lu; %lu; %lu\n",
-          SIMSTATS_GET(lltx),
-          SIMSTATS_GET(pkttx),
-          energest_type_time(ENERGEST_TYPE_LISTEN),
-          energest_type_time(ENERGEST_TYPE_TRANSMIT),
-          energest_type_time(ENERGEST_TYPE_LPM),
-          energest_type_time(ENERGEST_TYPE_CPU));
-#endif
-      } else {
-        // print_routing_tables(); break;
-        multicast_send();
+        break;
+      }
+      else { 
+        send_unicast_to_children();
         etimer_set(&et, SEND_INTERVAL);
       }
     }

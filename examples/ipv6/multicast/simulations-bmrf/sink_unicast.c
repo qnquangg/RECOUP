@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Swedish Institute of Computer Science.
+ * Copyright (c) 2010, Loughborough University - Computer Science
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,44 +27,51 @@
  * SUCH DAMAGE.
  *
  * This file is part of the Contiki operating system.
+ */
+
+/**
+ * \file
+ *         This node is part of the RPL multicast example. It is a node that
+ *         joins a multicast group and listens for messages. It also knows how
+ *         to forward messages down the tree.
+ *         For the example to work, we need one or more of those nodes.
  *
+ * \author
+ *         George Oikonomou - <oikonomou@users.sourceforge.net>
  */
 
 #include "contiki.h"
-#include "lib/random.h"
-#include "sys/ctimer.h"
-#include "sys/etimer.h"
-#include "net/ip/uip.h"
-#include "net/ipv6/uip-ds6.h"
-#define DEBUG DEBUG_PRINT
-#include "net/ip/uip-debug.h"
-#include "net/rpl/rpl.h"
+#include "contiki-lib.h"
 #include "contiki-net.h"
-
 #include "net/ipv6/multicast/uip-mcast6.h"
-#include "net/ipv6/multicast/uip-mcast6-route.h"
-
-#include "sys/node-id.h"
-
-#include "simple-udp.h"
-#include "servreg-hack.h"
 #include "simstats.h"
-#include "lib/list.h"
 
-#include <stdio.h>
 #include <string.h>
 
-#define UDP_PORT 1234
-#define SERVICE_ID 190
-
-#define SEND_INTERVAL		(10 * CLOCK_SECOND)
-#define SEND_TIME		(random_rand() % (SEND_INTERVAL))
 #define DEBUG DEBUG_PRINT
+#include "net/ip/uip-debug.h"
+
+#define MCAST_SINK_UDP_PORT 3001 /* Host byte order */
+
+static struct uip_udp_conn *sink_conn;
+static uint16_t count;
+static uint8_t received[MCAST_CONF_MESSAGES];
+static uint8_t duplicates;
+
+#define UIP_IP_BUF   ((struct uip_ip_hdr *)&uip_buf[UIP_LLH_LEN])
+
+#define WAIT_END 50
 
 #ifdef MCAST_CONF_START_DELAY
 #define START_DELAY MCAST_CONF_START_DELAY
 #else
 #define START_DELAY 60
+#endif
+
+#define SUBSCRIBING_TIME 100
+
+#if SUBSCRIBING_TIME > START_DELAY
+#define SUBSCRIBING_TIME START_DELAY
 #endif
 
 #if defined(MCAST_CONF_SEND_INTERVAL) && defined(MCAST_CONF_MESSAGES) && defined(MCAST_CONF_START_DELAY)
@@ -73,17 +80,23 @@
 #define WAIT_FOR_END 160 + 65
 #endif
 
-static struct simple_udp_connection unicast_connection;
-static uint8_t received[MCAST_CONF_MESSAGES];
-static uint8_t duplicates;
-static uint16_t count;
+#if !UIP_CONF_IPV6 || !UIP_CONF_ROUTER || !UIP_CONF_IPV6_MULTICAST || !UIP_CONF_IPV6_RPL
+#error "This example can not work with the current contiki configuration"
+#error "Check the values of: UIP_CONF_IPV6, UIP_CONF_ROUTER, UIP_CONF_IPV6_RPL"
+#endif
 
+// new
+#include "simple-udp.h"
+// #include "servreg-hack.h"
+#define UDP_PORT 1234
+#define SERVICE_ID 190
+static struct simple_udp_connection unicast_connection;
 /*---------------------------------------------------------------------------*/
-PROCESS(unicast_receiver_process, "Unicast receiver process");
-AUTOSTART_PROCESSES(&unicast_receiver_process);
+PROCESS(mcast_sink_process, "Multicast Sink");
+AUTOSTART_PROCESSES(&mcast_sink_process);
 /*---------------------------------------------------------------------------*/
 static void
-receiver(struct simple_udp_connection *c,
+unicast_receiver(struct simple_udp_connection *c,
          const uip_ipaddr_t *sender_addr,
          uint16_t sender_port,
          const uip_ipaddr_t *receiver_addr,
@@ -91,11 +104,15 @@ receiver(struct simple_udp_connection *c,
          const uint8_t *data,
          uint16_t datalen)
 {
-  // PRINTF("Data received from ");
-  // uip_debug_ipaddr_print(sender_addr);
-  // PRINTF(" on port %d from port %d with length %d: '%s'\n",
-  //        receiver_port, sender_port, datalen, data);
-
+  printf("Data received from ");
+  uip_debug_ipaddr_print(sender_addr);
+  printf(" on port %d from port %d with length %d: '%s'\n",
+         receiver_port, sender_port, datalen, data);
+}
+/*---------------------------------------------------------------------------*/
+static void
+tcpip_handler(void)
+{
   static uint32_t packet_number;
   if(uip_newdata()) {
     packet_number = uip_ntohl((unsigned long) *((uint32_t *)(uip_appdata)));
@@ -112,70 +129,61 @@ receiver(struct simple_udp_connection *c,
       PRINTF("\n");
     }
   }
+  return;
 }
 /*---------------------------------------------------------------------------*/
-static uip_ipaddr_t *
-set_global_address(void)
+static uip_ds6_maddr_t *
+join_mcast_group(void)
 {
-  int i;
-  uint8_t state;
+  uip_ipaddr_t addr;
+  uip_ds6_maddr_t *rv;
 
-  static uip_ipaddr_t ipaddr;
+  /* First, set our v6 global */
+  uip_ip6addr(&addr, 0xaaaa, 0, 0, 0, 0, 0, 0, 0);
+  uip_ds6_set_addr_iid(&addr, &uip_lladdr);
+  uip_ds6_addr_add(&addr, 0, ADDR_AUTOCONF);
 
-  uip_ip6addr(&ipaddr, 0xaaaa, 0, 0, 0, 0, 0, 0, 0);
-  uip_ds6_set_addr_iid(&ipaddr, &uip_lladdr);
-  uip_ds6_addr_add(&ipaddr, 0, ADDR_AUTOCONF);
+  /*
+   * IPHC will use stateless multicast compression for this destination
+   * (M=1, DAC=0), with 32 inline bits (1E 89 AB CD)
+   */
+  uip_ip6addr(&addr, 0xFF1E,0,0,0,0,0,0x89,0xABCD);
+  rv = uip_ds6_maddr_add(&addr);
 
-  PRINTF("IPv6 addresses: ");
-  for(i = 0; i < UIP_DS6_ADDR_NB; i++) {
-    state = uip_ds6_if.addr_list[i].state;
-    if(uip_ds6_if.addr_list[i].isused &&
-       (state == ADDR_TENTATIVE || state == ADDR_PREFERRED)) {
-      uip_debug_ipaddr_print(&uip_ds6_if.addr_list[i].ipaddr);
-      PRINTF("\n");
-    }
+  if(rv) {
+    PRINTF("Joined multicast group ");
+    PRINT6ADDR(&uip_ds6_maddr_lookup(&addr)->ipaddr);
+    PRINTF("\n");
   }
-
-  return &ipaddr;
+  return rv;
 }
 /*---------------------------------------------------------------------------*/
-static void
-create_rpl_dag(uip_ipaddr_t *ipaddr)
+PROCESS_THREAD(mcast_sink_process, ev, data)
 {
-  struct uip_ds6_addr *root_if;
-
-  root_if = uip_ds6_addr_lookup(ipaddr);
-  if(root_if != NULL) {
-    rpl_dag_t *dag;
-    uip_ipaddr_t prefix;
-    
-    rpl_set_root(RPL_DEFAULT_INSTANCE, ipaddr);
-    dag = rpl_get_any_dag();
-    uip_ip6addr(&prefix, 0xaaaa, 0, 0, 0, 0, 0, 0, 0);
-    rpl_set_prefix(dag, &prefix, 64);
-    PRINTF("created a new RPL dag\n");
-  } else {
-    PRINTF("failed to create a new RPL DAG\n");
-  }
-}
-/*---------------------------------------------------------------------------*/
-PROCESS_THREAD(unicast_receiver_process, ev, data)
-{
-  uip_ipaddr_t *ipaddr;
   static struct etimer et;
+  static struct etimer et_init;
 
   PROCESS_BEGIN();
 
-  ipaddr = set_global_address();
-
+  // new
   simple_udp_register(&unicast_connection, UDP_PORT,
-                      NULL, UDP_PORT, receiver);
+                      NULL, UDP_PORT, unicast_receiver);
 
   etimer_set(&et, WAIT_FOR_END * CLOCK_SECOND);
+  etimer_set(&et_init, (START_DELAY - SUBSCRIBING_TIME) * CLOCK_SECOND);
+
+  PRINTF("Multicast Engine: '%s'\n", UIP_MCAST6.name);
+  PRINTF("Wait for end: %d\n", WAIT_FOR_END);
+
+  count = 0;
+
 
   while(1) {
-    PROCESS_WAIT_EVENT();
-    if(etimer_expired(&et)) {
+    PROCESS_YIELD();
+    if(ev == tcpip_event) {
+      tcpip_handler();
+      //etimer_restart(&et);
+    } else if(etimer_expired(&et)) {
       // end
       PRINTF("%u; %lu; %lu; %lu; %lu; %lu; %lu\n",
         count,
@@ -188,8 +196,27 @@ PROCESS_THREAD(unicast_receiver_process, ev, data)
       // PRINTF("Duplicates; %u\n",
       //   duplicates);
       PROCESS_EXIT();
+    } else if(etimer_expired(&et_init)) {
+      if(join_mcast_group() == NULL) {
+        PRINTF("Failed to join multicast group\n");
+        PROCESS_EXIT();
+      }
+
+      sink_conn = udp_new(NULL, UIP_HTONS(0), NULL);
+      udp_bind(sink_conn, UIP_HTONS(MCAST_SINK_UDP_PORT));
+
+      PRINTF("Listening: ");
+      PRINT6ADDR(&sink_conn->ripaddr);
+      PRINTF(" local/remote port %u/%u\n",
+            UIP_HTONS(sink_conn->lport), UIP_HTONS(sink_conn->rport));
     }
+    // else if(etimer_expired(&et) && !etimer_expired(&et_init)){
+    //   etimer_restart(&et);
+    // } else if(!etimer_expired(&et) && etimer_expired(&et_init)){
+    //   etimer_restart(&et);
+    // }
   }
+
   PROCESS_END();
 }
 /*---------------------------------------------------------------------------*/

@@ -194,11 +194,11 @@ static void send_unicast_to_children() {
       // PRINTF("Sending unicast to ");
       // uip_debug_ipaddr_print(child_addr);
       // PRINTF("\n");
-      PRINTF("Send to: ");
-      uip_debug_ipaddr_print(child_addr);
-      // PRINTF(" Remote Port %u,", uip_ntohs(unicast_connection.rport));
-      PRINTF(" (msg=0x%08lx)", (unsigned long)uip_ntohl(*((uint32_t *)buf)));
-      PRINTF(" %lu bytes\n", (unsigned long)sizeof(id));
+      // PRINTF("Send to: ");
+      // uip_debug_ipaddr_print(child_addr);
+      // // PRINTF(" Remote Port %u,", uip_ntohs(unicast_connection.rport));
+      // PRINTF(" (msg=0x%08lx)", (unsigned long)uip_ntohl(*((uint32_t *)buf)));
+      // PRINTF(" %lu bytes\n", (unsigned long)sizeof(id));
       simple_udp_sendto(&unicast_connection, buf, sizeof(id), child_addr);
     }
   }
