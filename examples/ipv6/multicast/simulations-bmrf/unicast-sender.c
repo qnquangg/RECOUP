@@ -85,6 +85,13 @@ static struct simple_udp_connection unicast_connection;
 static uint32_t seq_id;
 static char buf[MAX_PAYLOAD_LEN];
 
+static struct ctimer ucast_periodic[UIP_DS6_ROUTE_NB];  // Array of timers for each potential child
+
+// Structure to hold sending context
+struct send_context {
+    uip_ipaddr_t addr;
+    uint32_t msg_len;
+};
 /*---------------------------------------------------------------------------*/
 PROCESS(unicast_sender_process, "Unicast sender process 2");
 AUTOSTART_PROCESSES(&unicast_sender_process);
@@ -160,6 +167,15 @@ void print_ucast6_table() {
   PRINTF("all_children: %d\n", all_children);
 }
 
+static void
+ucast_send_delayed(void *ptr) {
+  struct send_context *ctx = (struct send_context *)ptr;
+  if(ctx != NULL) {
+    simple_udp_sendto(&unicast_connection, buf, ctx->msg_len, &ctx->addr);
+    free(ctx);  // Free the context after sending
+  }
+}
+
 /*
 * Make a copy of all the objects in the routing table before entering the loop
 */
@@ -189,17 +205,17 @@ static void send_unicast_to_children() {
   // Iterate over the copied routes
   int i = 0;
   for (i = 0; i < route_count; i++) {
-    child_addr = &routes_copy[i].ipaddr;
-    if (child_addr != NULL) {
-      // PRINTF("Sending unicast to ");
-      // uip_debug_ipaddr_print(child_addr);
-      // PRINTF("\n");
-      // PRINTF("Send to: ");
-      // uip_debug_ipaddr_print(child_addr);
-      // // PRINTF(" Remote Port %u,", uip_ntohs(unicast_connection.rport));
-      // PRINTF(" (msg=0x%08lx)", (unsigned long)uip_ntohl(*((uint32_t *)buf)));
-      // PRINTF(" %lu bytes\n", (unsigned long)sizeof(id));
-      simple_udp_sendto(&unicast_connection, buf, sizeof(id), child_addr);
+    struct send_context *ctx = (struct send_context *)malloc(sizeof(struct send_context));
+    if (ctx != NULL) {
+      // Copy destination address
+      uip_ipaddr_copy(&ctx->addr, &routes_copy[i].ipaddr);
+      ctx->msg_len = sizeof(id);
+      
+      // Calculate delay for this child
+      clock_time_t delay = i * CLOCK_SECOND / 10;  // 100ms between sends
+      
+      // Set timer for delayed send
+      ctimer_set(&ucast_periodic[i], delay, ucast_send_delayed, ctx);
     }
   }
   seq_id++;
